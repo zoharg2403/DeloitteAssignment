@@ -1,0 +1,5 @@
+declare {
+  schema: "bronze",
+  name: "users"
+}
+

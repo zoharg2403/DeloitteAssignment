@@ -1,0 +1,11 @@
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "address",
+  uniqueKey: "user_id",
+  partitionBy: "DATE(updated_at)",
+  description: "Cleaned address table with incremental upsert"
+}
+
+SELECT * 
+FROM "bronze.address"

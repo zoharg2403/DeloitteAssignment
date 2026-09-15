@@ -1,0 +1,12 @@
+
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "users",
+  uniqueKey: "user_id",
+  partitionBy: "DATE(updated_at)",
+  description: "Cleaned users table with incremental upsert"
+}
+
+SELECT * 
+FROM "bronze.users"
