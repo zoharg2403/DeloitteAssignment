@@ -2,5 +2,7 @@
   "name": "deloitte-assignment",
   "version": "1.0.0",
   "description": "Deloitte BigQuery/dataform home assignment",
-  "dependencies": {}
+  "dependencies": {
+    "@dataform/core": "2.0.0"
+  }
 }
