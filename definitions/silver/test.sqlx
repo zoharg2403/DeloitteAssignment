@@ -1,6 +1,0 @@
-config {
-    type: "view"
-}
-
-SELECT * FROM bronze.users
-

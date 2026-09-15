@@ -2,7 +2,41 @@ config {
   type: "incremental",
   schema: "silver",
   name: "address",
-  uniqueKey: ["user_id"]
+  uniqueKey: ["user_id"],
+  bigquery: {
+    partitionBy: "DATE(updated_at)"
+  }
 }
 
-SELECT * FROM bronze.address as a
+WITH bronze AS (
+  SELECT
+    user_id,
+    country,
+    region,
+    city,
+    address,
+    updated_at
+  FROM bronze.address
+),
+
+users AS (
+  SELECT
+    user_id,
+    TRIM(country) AS country,
+    TRIM(region) AS region,
+    TRIM(city) AS city,
+    TRIM(address) AS address,
+    updated_at,
+    CURRENT_TIMESTAMP() AS processed_at
+  FROM bronze
+)
+
+SELECT *
+FROM users
+
+${when(incremental(), `
+  WHERE updated_at > (
+    SELECT MAX(updated_at)
+    FROM ${self()}
+  )
+`)}
