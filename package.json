@@ -1,4 +1,8 @@
 {
-  "name": "dataform-project",
-  "version": "1.0.0"
+  "name": "dataengproj-500110",
+  "version": "1.0.0",
+  "description": "Deloitte dataform home assignment",
+  "dependencies": {
+    "@dataform/core": "2.4.0"
+  }
 }
