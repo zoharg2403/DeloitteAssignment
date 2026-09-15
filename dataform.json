@@ -1,5 +1,6 @@
 {
   "warehouse": "bigquery",
+  "defaultLocation": "EU",
   "defaultSchema": "bronze",
   "assertionSchema": "assertions",
   "defaultDatabase": "dataengproj-500110"

@@ -2,19 +2,41 @@ config {
   type: "incremental",
   schema: "silver",
   name: "address",
-  unique_key: "user_id",
+  uniqueKey: ["user_id"],
+  bigquery: {
+    partitionBy: "DATE(updated_at)"
+  }
 }
 
-js {
-  const source = ref("definitions\bronze\address.sqlx");
-}
+WITH bronze AS (
+  SELECT
+    user_id,
+    country,
+    region,
+    city,
+    address,
+    updated_at
+  FROM bronze.address
+),
 
-SELECT * FROM ${source} as a
-${WHEN(
-  incremental(),
-  `where a.updated_at >
-     coalesce(
-       (select max(updated_at) from ${self()}),
-       timestamp("${default_start_ts}")
-     )`
-)}
+users AS (
+  SELECT
+    user_id,
+    TRIM(country) AS country,
+    TRIM(region) AS region,
+    TRIM(city) AS city,
+    TRIM(address) AS address,
+    updated_at,
+    CURRENT_TIMESTAMP() AS processed_at
+  FROM bronze
+)
+
+SELECT *
+FROM users
+
+${when(incremental(), `
+  WHERE updated_at > (
+    SELECT MAX(updated_at)
+    FROM ${self()}
+  )
+`)}

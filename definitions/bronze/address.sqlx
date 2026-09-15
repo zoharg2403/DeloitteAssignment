@@ -1,5 +1,5 @@
 config {
-  type: "declaration",
+  type: "view",
   schema: "bronze",
   name: "address"
 }
