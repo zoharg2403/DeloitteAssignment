@@ -1,3 +1,6 @@
 {
-
+  "warehouse": "bigquery",
+  "defaultSchema": "bronze",
+  "assertionSchema": "assertions",
+  "defaultDatabase": "dataengproj-500110"
 }

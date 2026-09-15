@@ -2,10 +2,19 @@ config {
   type: "incremental",
   schema: "silver",
   name: "address",
-  uniqueKey: "user_id",
-  partitionBy: "DATE(updated_at)",
-  description: "Cleaned address table with incremental upsert"
+  unique_key: "user_id",
 }
 
-SELECT * 
-FROM "bronze.address"
+js {
+  const source = ref("definitions\bronze\address.sqlx");
+}
+
+SELECT * FROM ${source} as a
+${WHEN(
+  incremental(),
+  `where a.updated_at >
+     coalesce(
+       (select max(updated_at) from ${self()}),
+       timestamp("${default_start_ts}")
+     )`
+)}

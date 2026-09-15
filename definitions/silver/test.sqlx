@@ -10,11 +10,4 @@ js {
 }
 
 SELECT * FROM ${source} as u
-${when(
-  incremental(),
-  `where u.updated_at >
-     coalesce(
-       (select max(updated_at) from ${self()}),
-       timestamp("${default_start_ts}")
-     )`
-)}
+LIMIT 10
