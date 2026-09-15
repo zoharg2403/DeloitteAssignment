@@ -2,19 +2,7 @@ config {
   type: "incremental",
   schema: "silver",
   name: "users",
-  unique_key: "user_id",
+  uniqueKey: ["user_id"]
 }
 
-js {
-  const source = ref("definitions\bronze\users.sqlx");
-}
-
-SELECT * FROM ${source} as u
-${when(
-  incremental(),
-  `where u.updated_at >
-     coalesce(
-       (select max(updated_at) from ${self()}),
-       timestamp("${default_start_ts}")
-     )`
-)}
+SELECT * FROM bronze.users as u

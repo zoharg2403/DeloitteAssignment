@@ -1,13 +1,6 @@
 config {
-  type: "incremental",
-  schema: "silver",
-  name: "users",
-  unique_key: "user_id",
+    type: "view"
 }
 
-js {
-  const source = ref("definitions\bronze\users.sqlx");
-}
+SELECT * FROM bronze.users
 
-SELECT * FROM ${source} as u
-LIMIT 10

@@ -2,19 +2,7 @@ config {
   type: "incremental",
   schema: "silver",
   name: "address",
-  unique_key: "user_id",
+  uniqueKey: ["user_id"]
 }
 
-js {
-  const source = ref("definitions\bronze\address.sqlx");
-}
-
-SELECT * FROM ${source} as a
-${WHEN(
-  incremental(),
-  `where a.updated_at >
-     coalesce(
-       (select max(updated_at) from ${self()}),
-       timestamp("${default_start_ts}")
-     )`
-)}
+SELECT * FROM bronze.address as a
