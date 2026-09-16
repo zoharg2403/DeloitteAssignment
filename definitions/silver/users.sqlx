@@ -1,8 +1,31 @@
 config {
-  type: "incremental",
-  schema: "silver",
-  name: "users",
-  uniqueKey: ["user_id"]
+    type: "incremental",
+    schema: "silver",
+    name: "silver_users",
+    uniqueKey: ["user_id"],
+    dependencies: ["bootstrap"],
+    description: "Incremental upsert of users from bronze.users",
+    bigquery: {
+        partitionBy: "DATE(_ingested_at)",
+        clusterBy: ["user_id"]
+    }
 }
 
-SELECT * FROM bronze.users as u
+WITH bronze_clean AS (
+  SELECT
+    SAFE_CAST(user_id AS INTEGER) AS user_id,
+    TRIM(SAFE_CAST(firstName AS STRING)) AS first_name,
+    TRIM(SAFE_CAST(lastName AS STRING)) AS last_name,
+    CURRENT_TIMESTAMP() AS _ingested_at
+  FROM ${ref("bronze_users")}
+  WHERE user_id IS NOT NULL 
+),
+  
+dedup AS (
+  SELECT AS VALUE
+    ARRAY_AGG(bronze_clean ORDER BY _ingested_at DESC)[OFFSET(0)]  -- pick the latest row per user_id
+  FROM bronze_clean
+  GROUP BY user_id 
+)
+
+SELECT * FROM dedup
