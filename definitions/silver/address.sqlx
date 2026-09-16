@@ -1,42 +1,33 @@
 config {
   type: "incremental",
   schema: "silver",
-  name: "address",
+  name: "silver_address",
   uniqueKey: ["user_id"],
+  dependencies: ["bootstrap"],
+  description: "Incremental upsert of curated address records from bronze.address",
   bigquery: {
-    partitionBy: "DATE(updated_at)"
+    partitionBy: "DATE(_ingested_at)",
+    clusterBy: ["city"]
   }
 }
 
-WITH bronze AS (
-  SELECT
-    user_id,
-    country,
-    region,
-    city,
-    address,
-    updated_at
-  FROM bronze.address
+WITH bronze_clean AS (
+  SELECT 
+    SAFE_CAST(user_id AS INTEGER) AS user_id,
+    TRIM(SAFE_CAST(country AS STRING)) AS country,
+    TRIM(SAFE_CAST(city AS STRING)) AS city,
+    TRIM(SAFE_CAST(region AS STRING)) AS region,
+    TRIM(SAFE_CAST(address AS STRING)) AS address,
+    CURRENT_TIMESTAMP() AS _ingested_at
+  FROM ${ref("bronze_address")}
+  WHERE user_id IS NOT NULL
 ),
 
-users AS (
-  SELECT
-    user_id,
-    TRIM(country) AS country,
-    TRIM(region) AS region,
-    TRIM(city) AS city,
-    TRIM(address) AS address,
-    updated_at,
-    CURRENT_TIMESTAMP() AS processed_at
-  FROM bronze
+dedup AS (
+  SELECT AS VALUE
+    ARRAY_AGG(bronze_clean ORDER BY _ingested_at DESC)[OFFSET(0)]  -- pick the latest row per user_id
+  FROM bronze_clean
+  GROUP BY user_id
 )
 
-SELECT *
-FROM users
-
-${when(incremental(), `
-  WHERE updated_at > (
-    SELECT MAX(updated_at)
-    FROM ${self()}
-  )
-`)}
+SELECT * FROM dedup

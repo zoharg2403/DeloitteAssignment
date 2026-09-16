@@ -3,5 +3,8 @@
   "defaultLocation": "EU",
   "defaultSchema": "bronze",
   "assertionSchema": "assertions",
-  "defaultDatabase": "dataengproj-500110"
+  "defaultDatabase": "dataengproj-500110",
+  "vars": {
+    "gcs_bucket": "deloitte_assignment"
+  }
 }

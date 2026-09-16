@@ -1,5 +1,6 @@
 config {
-  type: "view",
+  type: "declaration",
   schema: "bronze",
-  name: "address"
+  name: "bronze_address",
+  description: "Raw address loaded from GCS via data transfer"
 }
