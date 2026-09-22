@@ -1,0 +1,12 @@
+project:
+  name: deloitte-assignment
+  default_region: us-central1
+
+naming:
+  bronze_dataset: bronze
+  silver_dataset: silver
+  gold_dataset: gold
+
+artifacts:
+  dataproc_release_prefix: releases
+  dataproc_debug_prefix: debug

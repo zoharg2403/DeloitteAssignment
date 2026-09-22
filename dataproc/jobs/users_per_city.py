@@ -1,11 +1,11 @@
 
 from pyspark.sql import functions as F
 
-from utils.config import Config
-from utils.config_models import ConfigJob
-from utils.big_query import BigQueryIO
-from utils.logger import Logger
-from utils.spark_session import SparkSessionBuilder
+from dataproc.utils.config import Config
+from dataproc.utils.config_models import ConfigJob
+from dataproc.utils.big_query import BigQueryIO
+from dataproc.utils.logger import Logger
+from dataproc.utils.spark_session import SparkSessionBuilder
 
 
 logger = Logger()

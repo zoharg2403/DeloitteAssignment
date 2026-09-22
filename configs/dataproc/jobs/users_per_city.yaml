@@ -1,0 +1,14 @@
+job_name: users_per_city
+
+source:
+  dataset: gold
+  table: gold_users_address
+
+target:
+  dataset: gold
+  table: gold_users_per_city
+
+write_mode: overwrite
+
+spark:
+  adaptive_query_execution: true

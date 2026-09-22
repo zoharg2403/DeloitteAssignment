@@ -1,8 +1,8 @@
 from pyspark.sql import SparkSession
 from pydantic import BaseModel, Field
 
-from utils.config import Config
-from utils.logger import Logger
+from dataproc.utils.config import Config
+from dataproc.utils.logger import Logger
 
 
 logger = Logger()

@@ -1,0 +1,22 @@
+pipeline_name: users_per_city
+schedule: null
+catchup: false
+max_active_runs: 1
+
+dataform:
+  enabled: true
+  git_commitish: main
+  tags:
+    - users_per_city
+
+dataproc:
+  enabled: true
+  job: users_per_city
+  batch_timeout_minutes: 45
+
+retries:
+  count: 1
+  delay_minutes: 5
+
+alerts:
+  email_on_failure: false

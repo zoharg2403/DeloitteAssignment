@@ -3,8 +3,8 @@ import uuid
 from pydantic import BaseModel, Field
 from google.cloud import dataproc_v1
 
-from utils.config import Config
-from utils.logger import Logger
+from dataproc.utils.config import Config
+from dataproc.utils.logger import Logger
 
 from gcs_bucket import GCSBucketSync
 from release_manager import ReleaseManager

@@ -3,7 +3,7 @@ from datetime import datetime as dt
 from pathlib import Path
 from pydantic import BaseModel, Field, model_validator
 
-from utils.config import Config
+from dataproc.utils.config import Config
 
 
 class ConfigLogger(BaseModel):

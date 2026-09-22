@@ -1,0 +1,21 @@
+environment: dev
+
+gcp:
+  project_id: dataengproj-500110
+  region: us-central1
+
+storage:
+  dataproc_release_bucket: gs://deloitte_assignment_dataproc_dev/releases
+  dataproc_debug_bucket: gs://deloitte_assignment_dataproc_dev/debug
+  dataproc_temp_bucket: gs://deloitte_assignment_dataproc_temp
+
+bigquery:
+  location: EU
+  temp_dataset: dataproc_materialization
+  datasets:
+    bronze: bronze
+    silver: silver
+    gold: gold
+
+dataform:
+  repository_id: analytics-dataform
