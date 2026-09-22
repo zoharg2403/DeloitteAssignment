@@ -1,0 +1,32 @@
+
+logger:
+  name: "applog"
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  logs_dir: "outputs/logs"
+
+
+big_query:
+  project_id:      "dataengproj-500110"
+  temp_GCS_bucket: "gs://deloitte_assignment_dataproc_temp"
+
+
+spark_session:
+  project_id:   "dataengproj-500110"
+  app_name:     "DeloitteAssignmentSparkSession"
+  temp_dataset: "dataproc_materialization"
+
+
+jobs:
+
+  users_per_city:
+    main_script: "jobs/users_per_city.py"
+    source:
+      dataset: "gold"
+      table:   "gold_users_address"
+    target:
+      dataset: "gold"
+      table:   "gold_users_per_city"
+    write_mode: "overwrite"
+
+

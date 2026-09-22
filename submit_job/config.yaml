@@ -1,0 +1,33 @@
+
+project_id:       "dataengproj-500110"
+bucket_uri:       "gs://deloitte_assignment_dataproc_dev/releases"
+debug_bucket_uri: "gs://deloitte_assignment_dataproc_dev/debug"
+region:           "us-central1"
+debug:            False
+
+release:
+  create_new: True            # if True, create a new version (ignore 'version' param), default = False
+  requested_version: 'latest'  # select specific from bucket (make sure to set job_runtime.debug to select bucket), or 'latest', default = 'latest'
+
+assets:
+  # file/folder path should be relative to project root
+  include:
+    - "config.yaml"
+    - "jobs/"
+  include_zipped:
+    - "utils/"
+  ignore_patterns:
+    dirs:
+      - "__pycache__"
+    extensions:
+      - "*.pyc"
+
+kwargs:
+  # file/folder path should be relative to project root
+  python_file_uris:
+    - "utils.zip"
+  file_uris:
+    - "config.yaml"
+
+
+
