@@ -1,6 +1,6 @@
 
 import os
-
+from datetime import datetime as dt, timedelta
 from airflow import DAG
 from airflow.providers.google.cloud.operators.dataform import (
     DataformCreateCompilationResultOperator,
@@ -21,10 +21,17 @@ pipeline_cfg = cfg.pipelines
 deploy_cfg = cfg.dataproc_deploy
 release_uri = f"{env_cfg.scripts_bucket}/{os.getenv('RELEASE_VERSION', 'latest')}"
 
+default_args = {
+    "owner": pipeline_cfg.dag_args.owner,
+    "start_date": dt.strptime(str(pipeline_cfg.dag_args.start_date), "%d-%m-%Y"),
+    "retries": pipeline_cfg.dag_args.retries,
+    "retry_delay": timedelta(seconds=pipeline_cfg.dag_args.retry_delay_sec),
+}
+
 
 with DAG(
     dag_id=pipeline_cfg.dag.dag_id,
-    default_args={**pipeline_cfg.dag_args},
+    default_args=default_args,
     schedule_interval=pipeline_cfg.dag.schedule_interval,
     catchup=pipeline_cfg.dag.catchup,
     ) as dag:
@@ -48,7 +55,17 @@ with DAG(
         repository_id=pipeline_cfg.dataform.repository_id,
         workflow_invocation={
             # Link compilation result from the compile step dynamically
-            "compilation_result": "{{ task_instance.xcom_pull('compile_dataform')['name'] }}"
+            "compilation_result": "{{ task_instance.xcom_pull('compile_dataform')['name'] }}",
+            "invocation_config": {
+                "transitive_dependencies_included": True,
+                "included_targets": [
+                    {
+                        "database": env_cfg.project_id,
+                        "schema": "gold",
+                        "name": "gold_users_address",
+                    },
+                ],
+            },
         },
     )
 

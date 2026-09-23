@@ -4,7 +4,7 @@ config {
   name: "gold_users_address",
   description: "user profile combining latest user attributes with corresponding address details",
   uniqueKey: ["user_id"],
-  dependencies: ["bootstrap"],
+  dependencies: ["bootstrap", "silver_users", "silver_address"],
   bigquery: {
     partitionBy: "DATE(_ingested_at)",
     clusterBy: ["city"]
