@@ -12,6 +12,7 @@ assets:
 # path should be relative to repo root
   include:
     - dataproc/jobs/
+    - config.yaml
     - .env
   include_zipped:
     - dataproc/
