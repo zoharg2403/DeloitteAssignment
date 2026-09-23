@@ -32,6 +32,7 @@ class Config:
 
     default_dotenv = ".env"
     default_env = 'dev'
+    default_config_dir = 'configs'
 
     _instance = None
 
@@ -48,11 +49,11 @@ class Config:
             ):
         load_dotenv(dotenv_filepath or self.default_dotenv, override=True)
         self.environment = environment or os.getenv("APP_ENV", self.default_env)
-        self.config_dir = self._config_dir(config_dir)
+        self.config_dir = self._config_dir(config_dir or self.default_config_dir)
         self._root = self._load_base_config()
 
     def _config_dir(self, config_dir: str | Path | None) -> Path:
-        path = Path(config_dir or os.getenv("CONFIG_DIR", "./configs"))
+        path = Path(config_dir)
         if not path.is_dir():
             raise FileNotFoundError(f"Configuration directory does not exist: {path}")
         return path
@@ -88,6 +89,9 @@ class Config:
 
     def job(self, job_name: str):
         return _Root(self._read_yaml(self.config_dir / "dataproc" / "jobs" / f"{job_name}.yaml"))
+
+    def pipeline(self, pipe_name: str):
+        return _Root(self._read_yaml(self.config_dir / "pipelines" / f"{pipe_name}.yaml"))
 
     def __getattr__(self, attr: str) -> Any:
         try:

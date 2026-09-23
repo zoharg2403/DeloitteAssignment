@@ -9,7 +9,7 @@ from dataproc.utils.spark_session import SparkSessionBuilder
 
 class BigQueryIO:
     
-    cfg: ConfigBigQuery = ConfigEnv(**Config().env).bigquery
+    cfg: ConfigBigQuery = ConfigEnv(**Config()).bigquery
 
     def __init__(self, spark: SparkSession | None = None):
         self.spark = spark or SparkSessionBuilder.build()

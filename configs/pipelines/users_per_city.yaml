@@ -1,7 +1,14 @@
-pipeline_name: users_per_city
-schedule: null
-catchup: false
-max_active_runs: 1
+
+dag:
+  dag_id: "dataform_to_dataproc_serverless_pipeline"
+  schedule_interval: 0 6 * * *  # (daily at 6 AM)
+  catchup:           False
+
+dag_args:
+  owner:      data-eng
+  start_date: 01-01-2026
+  retries:    1 
+  retry_delay_sec: 300
 
 dataform:
   enabled: true

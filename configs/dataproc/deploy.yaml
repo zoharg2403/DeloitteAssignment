@@ -18,7 +18,8 @@ dataproc_deploy:
       dirs:
         - __pycache__
       extensions:
-        - "*.pyc"
+        - ".pyc"
+        - ".zip"
 
   batch_kwargs: 
     pyspark:
