@@ -1,21 +1,17 @@
-environment: dev
 
-gcp:
+env:
+
+  env_name: dev
   project_id: dataengproj-500110
   region: us-central1
+  scripts_bucket: gs://deloitte_assignment_dataproc_dev
 
-storage:
-  dataproc_release_bucket: gs://deloitte_assignment_dataproc_dev/releases
-  dataproc_debug_bucket: gs://deloitte_assignment_dataproc_dev/debug
-  dataproc_temp_bucket: gs://deloitte_assignment_dataproc_temp
+  spark_session:
+    app_name:                spark
+    views_enabled:           True
+    materialization_dataset: dataproc_materialization
 
-bigquery:
-  location: EU
-  temp_dataset: dataproc_materialization
-  datasets:
-    bronze: bronze
-    silver: silver
-    gold: gold
+  bigquery:
+    # location: EU
+    temp_bucket: gs://deloitte_assignment_dataproc_temp
 
-dataform:
-  repository_id: analytics-dataform

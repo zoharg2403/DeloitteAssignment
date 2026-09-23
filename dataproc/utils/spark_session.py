@@ -1,38 +1,35 @@
+
 from pyspark.sql import SparkSession
-from pydantic import BaseModel, Field
 
-from dataproc.utils.config import Config
-from dataproc.utils.logger import Logger
-
-
-logger = Logger()
-
-class ConfigSparkSessionBuilder(BaseModel):
-    project_id:   str = Field(..., description="Project ID")
-    app_name:     str = Field(..., description="Spark Application Name")
-    temp_dataset: str = Field(..., description="Temporary Dataset for BigQuery Materialization")
+from common.config import Config
+from common.config_models import ConfigSparkSession, ConfigEnv
+from common.logger import Logger
 
 
 class SparkSessionBuilder:
 
-    cfg = ConfigSparkSessionBuilder(**Config().spark_session)
+    cfg: ConfigSparkSession = ConfigEnv(**Config().env).spark_session
+    logger = Logger()
 
     @classmethod
-    def build(cls):
+    def build(cls, job_name: str):
         """Creates or retrieves a Spark session with BigQuery pre-configured."""
-        logger.info(f"Starting Spark session '{cls.cfg.app_name}'")
+        cls.logger.info(f"Build Spark session '{cls.cfg.app_name}'")
         try:
             spark = (
                 SparkSession.builder
-                .appName(cls.cfg.app_name)
+                .appName(cls.cfg.app_name + f"-{job_name}")
                 .config("spark.jars.packages", "com.google.cloud.spark:spark-bigquery-with-dependencies_2.12:0.34.0")
-                .config("viewsEnabled", "true")
-                .config("materializationDataset", f"{cls.cfg.project_id}.{cls.cfg.temp_dataset}")
+                .config("viewsEnabled", cls.cfg.views_enabled)
+                .config("materializationDataset", f"{cls.cfg.project_id}.{cls.cfg.materialization_dataset}")
                 .getOrCreate()
             )
-        except Exception:
-            logger.exception(f"Failed to create Spark session '{cls.cfg.app_name}'")
-            raise
-        logger.info(f"Spark session '{cls.cfg.app_name}' is ready")
+        except Exception as e:
+            cls.logger.error(f"Failed to create Spark session '{cls.cfg.app_name}' with error: {e}")
+            raise Exception(f"Failed to create Spark session '{cls.cfg.app_name}'") from e
+        cls.logger.info(f"Spark session '{cls.cfg.app_name}' is ready")
         return spark
 
+
+if __name__ == "__main__":
+    SparkSessionBuilder()

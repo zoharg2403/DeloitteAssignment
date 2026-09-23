@@ -1,47 +1,35 @@
 
 from pyspark.sql import functions as F
 
-from dataproc.utils.config import Config
-from dataproc.utils.config_models import ConfigJob
-from dataproc.utils.big_query import BigQueryIO
-from dataproc.utils.logger import Logger
-from dataproc.utils.spark_session import SparkSessionBuilder
-
-
-logger = Logger()
+from dataproc.utils.job_context import JobContext
 
 
 def main():
-    logger.info("Starting users_per_city job")
-    spark = None
+    ctx = JobContext.create("users_per_city")
     try:
-        cfg = ConfigJob(**Config().jobs.users_per_city)
-        logger.debug(f"Job configured to read '{cfg.source.dataset}.{cfg.source.table}' and write '{cfg.target.dataset}.{cfg.target.table}'")
-        spark = SparkSessionBuilder.build()
-        bq = BigQueryIO(spark)
+        ctx.logger.info("Starting users_per_city job, with tables: source='%s', target='%s')",
+                        ctx.cfg.source.fullname, ctx.cfg.target.fullname)
 
         loc_cols = ["country", "region", "city"]
         users_per_city = (
-            bq.read(cfg.source.dataset, cfg.source.table)
+            ctx.bigquery.read(ctx.cfg.source.dataset, ctx.cfg.source.table)
             .dropna(subset=loc_cols)
             .groupBy(*loc_cols)
             .agg(F.countDistinct("user_id").alias("user_count"))
         )
 
-        bq.write(
+        ctx.bigquery.write(
             users_per_city,
-            cfg.target.dataset,
-            cfg.target.table,
-            mode=cfg.write_mode,
+            ctx.cfg.target.dataset,
+            ctx.cfg.target.table,
+            mode=ctx.cfg.write_mode,
         )
-        logger.info("users_per_city job completed successfully")
+        ctx.logger.info("users_per_city job completed successfully")
     except Exception:
-        logger.exception("users_per_city job failed")
+        ctx.logger.exception("users_per_city job failed")
         raise
     finally:
-        if spark is not None:
-            logger.info("Stopping Spark session")
-            spark.stop()
+        ctx.close()
 
 
 if __name__ == "__main__":

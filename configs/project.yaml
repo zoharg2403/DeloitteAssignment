@@ -1,12 +1,8 @@
-project:
-  name: deloitte-assignment
-  default_region: us-central1
 
-naming:
-  bronze_dataset: bronze
-  silver_dataset: silver
-  gold_dataset: gold
-
-artifacts:
-  dataproc_release_prefix: releases
-  dataproc_debug_prefix: debug
+  logger:
+    name: applog
+    level: INFO
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    logs_dir: outputs/logs
+    to_stream: true
+    to_file: true
