@@ -2,7 +2,7 @@
 dataproc_deploy:
 
   release:
-    create_new: True
+    create_new: False
     requested_version: 'latest'  # unused when create_new == true
     assets:
     # define files to include/exclude in the release if create_new == true
@@ -29,4 +29,4 @@ dataproc_deploy:
         - configs/environments/dev.yaml
         - configs/dataproc/jobs/users_per_city.yaml
     runtime_config_properties:
-      spark.sql.adaptive.enabled: True
+      spark.sql.adaptive.enabled: False
