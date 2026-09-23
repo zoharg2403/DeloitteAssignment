@@ -1,0 +1,62 @@
+
+logger:
+
+  name: applog
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  logs_dir: outputs/logs
+  to_stream: true
+  to_file: true
+
+
+env:
+
+  dev:
+    env_name: dev
+    project_id: dataengproj-500110
+    region: us-central1
+    scripts_bucket: gs://deloitte_assignment_dataproc_dev
+
+    spark_session:
+      app_name:                spark
+      views_enabled:           True
+      materialization_dataset: dataproc_materialization
+
+    bigquery:
+      # location: EU
+      temp_bucket: gs://deloitte_assignment_dataproc_temp
+
+
+jobs:
+
+  users_per_city:
+    batch_name: users-per-city
+    main_script: "dataproc/jobs/users_per_city.py"
+
+    source:
+      dataset: gold
+      table: gold_users_address
+
+    target:
+      dataset: gold
+      table: gold_users_per_city
+
+    write_mode: overwrite
+
+
+pipelines:
+
+  dag:
+    dag_id: "dataform_to_dataproc_serverless_pipeline"
+    schedule_interval: 0 6 * * *  # (daily at 6 AM)
+    catchup:           False
+
+  dag_args:
+    owner:      data-eng
+    start_date: 01-01-2026
+    retries:    1 
+    retry_delay_sec: 300
+
+  dataform:
+    repository_id: dataengproj-500110
+    git_commitish: main

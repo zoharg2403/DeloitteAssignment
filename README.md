@@ -4,7 +4,7 @@
 gcloud.cmd auth login
 gcloud.cmd auth application-default login
 
-# Select the project used by config.yaml.
+# Select the project used by the active environment configuration.
 gcloud.cmd config set project dataengproj-500110
 
 # Verify
@@ -20,17 +20,16 @@ gs://<scripts_bucket>/debug/<release_version>/
 ```
 
 Set `RELEASE_VERSION` in CI to a git tag or commit SHA. It overrides the
-`job_runtime.release_version` value in `config.yaml`:
+release settings are defined in `configs/dataproc/deploy/release.yaml`:
 
 ```powershell
 $env:RELEASE_VERSION = "2026.09.17-a1b2c3d"
-python submit_job.py
+python -m deploy.dataproc.main
 ```
 
-The main script is uploaded directly, while `utils` is uploaded as
-`utils.zip` and listed in `python_file_uris`. A whole-repository zip is not
-used because it would package notebooks and unrelated files and is not needed
-for Dataproc dependency resolution.
+The main script is uploaded directly, while `dataproc/utils` is uploaded as
+`dataproc/utils.zip` and listed in `python_file_uris`. Configuration files are
+uploaded from `configs/` so the worker can load the selected environment and job.
 
 Set `release_version` to `latest` to submit an existing release without
 uploading files. Set `update_scripts: true` and provide a concrete

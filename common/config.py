@@ -32,7 +32,7 @@ class Config:
 
     default_dotenv = ".env"
     default_env = 'dev'
-    default_config_dir = 'configs'
+    default_config = 'config.yaml'
 
     _instance = None
 
@@ -41,25 +41,14 @@ class Config:
             cls._instance = super().__new__(cls)
         return cls._instance
     
-    def __init__(
-            self, 
-            dotenv_filepath: str | Path | None = None,
-            environment: str | None = None, 
-            config_dir: str | Path | None = None
-            ):
-        load_dotenv(dotenv_filepath or self.default_dotenv, override=True)
-        self.environment = environment or os.getenv("APP_ENV", self.default_env)
-        self.config_dir = self._config_dir(config_dir or self.default_config_dir)
+    def __init__(self):
+        load_dotenv(self.default_dotenv, override=True)
+        self.environment = os.getenv("APP_ENV", self.default_env)
         self._root = self._load_base_config()
 
-    def _config_dir(self, config_dir: str | Path | None) -> Path:
-        path = Path(config_dir)
-        if not path.is_dir():
-            raise FileNotFoundError(f"Configuration directory does not exist: {path}")
-        return path
-
     @staticmethod
-    def _read_yaml(path: Path):
+    def _read_yaml(path: Path | str):
+        path = Path(path)
         if not path.is_file():
             raise FileNotFoundError(f"Configuration file does not exist: {path}")
         with path.open(encoding="utf-8") as file:
@@ -69,29 +58,18 @@ class Config:
         return values
 
     def _load_base_config(self) -> _Root:
-        return _Root({
-            **self._read_yaml(self.config_dir / "project.yaml"),
-            **self._read_yaml(self.config_dir / "environments" / f"{self.environment}.yaml")
-            })
+        return _Root(self._read_yaml(self.default_config))
 
-    def _merge(self, yaml_filepath: Path) -> None:
-        self._root = _Root({
-            **self._root, 
-            **self._read_yaml(yaml_filepath)
-            })
+    @property
+    def env(self):
+        return getattr(self._root.env, self.environment)
 
     @property
     def dataproc_deploy(self):
-        if "dataproc_deploy" not in self._root:
-            filepath = self.config_dir / "dataproc" / "deploy.yaml"
-            self._merge(filepath)
-        return self._root.dataproc_deploy
+        cfg_yaml = Path("deploy") / "dataproc" / "deploy.yaml"
+        return _Root(self._read_yaml(cfg_yaml))
 
-    def job(self, job_name: str):
-        return _Root(self._read_yaml(self.config_dir / "dataproc" / "jobs" / f"{job_name}.yaml"))
 
-    def pipeline(self, pipe_name: str):
-        return _Root(self._read_yaml(self.config_dir / "pipelines" / f"{pipe_name}.yaml"))
 
     def __getattr__(self, attr: str) -> Any:
         try:

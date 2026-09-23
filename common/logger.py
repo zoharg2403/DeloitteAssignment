@@ -3,7 +3,6 @@ from datetime import datetime as dt
 from pathlib import Path
 
 from common.config import Config
-from common.config_models import ConfigLogger
 
 class Logger:
 
@@ -15,7 +14,7 @@ class Logger:
         return cls._instance
 
     def __init__(self):
-        self.cfg      = ConfigLogger(**Config().logger)
+        self.cfg      = Config().logger
         self.filepath = self._get_filepath() if self.cfg.to_file else None
         self.logger   = self._init_logger()
 

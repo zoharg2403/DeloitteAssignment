@@ -2,14 +2,13 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from common.config import Config
-from common.config_models import ConfigBigQuery, ConfigEnv
 from common.logger import Logger
 from dataproc.utils.spark_session import SparkSessionBuilder
 
 
 class BigQueryIO:
     
-    cfg: ConfigBigQuery = ConfigEnv(**Config()).bigquery
+    cfg = Config().env
 
     def __init__(self, spark: SparkSession | None = None):
         self.spark = spark or SparkSessionBuilder.build()
@@ -41,7 +40,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.temp_bucket)
+                .option("temporaryGcsBucket", self.cfg.bigquery.temp_bucket)
                 .mode(mode)
                 .save()
             )
@@ -58,7 +57,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.temp_bucket)
+                .option("temporaryGcsBucket", self.cfg.bigquery.temp_bucket)
                 .option("partitionField", partition_field)
                 .mode(mode)
                 .save()

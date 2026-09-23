@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from pyspark.sql import SparkSession
 
 from common.config import Config
-from common.config_models import ConfigJob
 from common.logger import Logger
 from dataproc.utils.spark_session import SparkSessionBuilder
 from dataproc.utils.big_query import BigQueryIO
@@ -14,14 +13,14 @@ class JobContext:
     """Shared runtime resources and configuration for Dataproc job."""
 
     job_name: str
-    cfg:      ConfigJob
+    cfg:      Config
     logger:   Logger
     spark:    SparkSession
     bigquery: BigQueryIO  
 
     @classmethod
     def create(cls, job_name: str) -> JobContext:
-        cfg      = Config().job(job_name)
+        cfg      = Config()
         logger   = Logger()
         spark    = SparkSessionBuilder.build(job_name)
         bigquery = BigQueryIO(spark)

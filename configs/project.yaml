@@ -1,8 +1,0 @@
-
-  logger:
-    name: applog
-    level: INFO
-    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    logs_dir: outputs/logs
-    to_stream: true
-    to_file: true

@@ -1,0 +1,40 @@
+
+release:
+
+  create_new: True
+  requested_version: 'latest'  # unused when create_new == true
+
+
+assets:
+
+# define files to include/exclude in the release if create_new == true
+# should contain scripts for all jobs
+# path should be relative to repo root
+  include:
+    - dataproc/jobs/
+    - .env
+  include_zipped:
+    - dataproc/
+    - common/
+
+
+ignore_patterns:
+
+  dirs:
+    - __pycache__
+  extensions:
+    - ".pyc"
+    - ".zip"
+
+
+batch_kwargs: 
+
+  pyspark:
+    python_file_uris:
+      - dataproc.zip
+      - common.zip
+    file_uris:
+      - .env
+      - config.yaml
+  runtime_config_properties:
+    spark.sql.adaptive.enabled: False

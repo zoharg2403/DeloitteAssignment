@@ -6,14 +6,14 @@ import zipfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-from common.config_models import ConfigRelease
-
+from common.config import Config
 
 class ReleaseManager:
 
-    def __init__(self, bucket_uri: str, cfg: ConfigRelease | dict):
+    def __init__(self, bucket_uri: str):
         self.bucket_uri = bucket_uri.strip('/')
-        self.cfg = cfg if isinstance(cfg, ConfigRelease) else ConfigRelease(**cfg)
+        self.cfg = Config().dataproc_deploy
+
 
         # properties
         self.gcloud_ = None
@@ -61,8 +61,7 @@ class ReleaseManager:
     def is_ignored(self, path: Path | str):
         path = Path(path).resolve()
 
-        # Check if path is inside any directory in ignore_patterns.norm_dirs
-        for dir_ in self.cfg.ignore_patterns.norm_dirs:
+        for dir_ in self.cfg.ignore_patterns.dirs:
             try:
                 # If path is a subpath of dir_, this will succeed
                 path.relative_to(dir_)
@@ -70,10 +69,9 @@ class ReleaseManager:
             except ValueError:
                 pass
 
-        # Check extension
         if path.is_file():
             ext = path.suffix.lower()
-            if ext in self.cfg.ignore_patterns.norm_extensions:
+            if ext in self.cfg.ignore_patterns.extensions:
                 return True
 
         return False
@@ -145,14 +143,14 @@ class ReleaseManager:
 
     def _resolve(self) -> str:
         """Select and validate the concrete release used by this run."""
-        if self.cfg.create_new:
+        if self.cfg.release.create_new:
             self._create_new()
 
-        elif self.cfg.requested_version == "latest":
+        elif self.cfg.release.requested_version == "latest":
             self._get_latest()
 
         else:
-            self.release_version_ = self.cfg.requested_version
+            self.release_version_ = self.cfg.release.requested_version
             if not self.is_exists(self.release_uri):
                 raise ValueError(f"Release does not exist: {self.release_uri}")
                  

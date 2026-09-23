@@ -5,18 +5,17 @@ from pathlib import Path
 from google.cloud import dataproc_v1
 
 from common.config import Config
-from common.config_models import ConfigJob, ConfigJobSubmitter
 from deploy.dataproc.release_manager import ReleaseManager
 
 
 class JobSubmitter:
 
     def __init__(self):
-        cfg = Config()
-        self.cfg = ConfigJobSubmitter(env=cfg.env, **cfg.dataproc_deploy)
+        self.cfg = Config()
+        self.cfg_deploy = Config().dataproc_deploy
 
         try:
-            self.release_mgr = ReleaseManager(bucket_uri=self.cfg.env.scripts_bucket, cfg=self.cfg.release)
+            self.release_mgr = ReleaseManager(bucket_uri=self.cfg.env.scripts_bucket)
         except Exception as e:
             raise Exception(f"Failed to initialize ReleaseManager with error: {e}") from e
 
@@ -28,24 +27,27 @@ class JobSubmitter:
         return self.release_mgr.gcs_path_join(path)
 
     def run(self, job_name: str):
-        cfg_job = ConfigJob(**Config().job(job_name))
+        cfg_job = getattr(self.cfg.jobs, job_name)
         batch_id = f"{cfg_job.batch_name}-{uuid.uuid4().hex[:8]}"
         main_script_uri = self.release_path_join(cfg_job.main_script)
 
         parent = f"projects/{self.cfg.env.project_id}/locations/{self.cfg.env.region}"
 
-        self.cfg.batch_kwargs.map_bucket_fullpath(map_func=self.release_path_join)
         batch = {
             "pyspark_batch": {
                 "main_python_file_uri": main_script_uri,
-                **self.cfg.batch_kwargs.pyspark
+                **{
+                    k: [self.release_path_join(vi) for vi in v] 
+                   for k, v in self.cfg_deploy.batch_kwargs.pyspark.items()
+                   }
                 },
                 "runtime_config": {
                     "properties": {
-                        **self.cfg.batch_kwargs.runtime_config_properties
+                        k: str(v).lower() 
+                        for k, v in self.cfg_deploy.batch_kwargs.runtime_config_properties.items()
+                        }
                     }
                 }
-            }
 
         with dataproc_v1.BatchControllerClient(
                 client_options={"api_endpoint": f"{self.cfg.env.region}-dataproc.googleapis.com:443"}
