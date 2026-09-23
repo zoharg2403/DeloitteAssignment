@@ -6,7 +6,7 @@ logger:
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   logs_dir: outputs/logs
   to_stream: true
-  to_file: true
+  to_file: false
 
 
 env:

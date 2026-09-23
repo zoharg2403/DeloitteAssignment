@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+
+import os
 
 from airflow import DAG
 from airflow.providers.google.cloud.operators.dataform import (
@@ -14,32 +15,37 @@ from common.config import Config
 
 
 cfg = Config()
+env_cfg = cfg.env
+job_cfg = cfg.jobs.users_per_city
+pipeline_cfg = cfg.pipelines
+deploy_cfg = cfg.dataproc_deploy
+release_uri = f"{env_cfg.scripts_bucket}/{os.getenv('RELEASE_VERSION', 'latest')}"
 
 
 with DAG(
-    dag_id=cfg.dag.dag_id,
-    default_args={**cfg.dag_args},
-    schedule_interval=cfg.dag.schedule_interval,
-    catchup=cfg.dag.catchup,
+    dag_id=pipeline_cfg.dag.dag_id,
+    default_args={**pipeline_cfg.dag_args},
+    schedule_interval=pipeline_cfg.dag.schedule_interval,
+    catchup=pipeline_cfg.dag.catchup,
     ) as dag:
 
     # Compile Dataform repository code
     compile_dataform = DataformCreateCompilationResultOperator(
         task_id="compile_dataform",
-        project_id=cfg.env.project_id,
-        region=cfg.env.region,
-        repository_id=cfg.dataform.repository_id,
+        project_id=env_cfg.project_id,
+        region=env_cfg.region,
+        repository_id=pipeline_cfg.dataform.repository_id,
         compilation_result={
-            "git_commitish": cfg.dataform.git_commitish,
+            "git_commitish": pipeline_cfg.dataform.git_commitish,
         },
     )
 
     # Run Dataform workflow
     run_dataform = DataformCreateWorkflowInvocationOperator(
         task_id="run_dataform",
-        project_id=cfg.env.project_id,
-        region=cfg.env.region,
-        repository_id=cfg.dataform.repository_id,
+        project_id=env_cfg.project_id,
+        region=env_cfg.region,
+        repository_id=pipeline_cfg.dataform.repository_id,
         workflow_invocation={
             # Link compilation result from the compile step dynamically
             "compilation_result": "{{ task_instance.xcom_pull('compile_dataform')['name'] }}"
@@ -49,8 +55,11 @@ with DAG(
     # Dataproc Serverless PySpark batch configuration
     pyspark_batch_config = {
         "pyspark_batch": {
-            "main_python_file_uri": cfg.job.main_script,
-            **deploy_cfg.batch_kwargs.pyspark
+            "main_python_file_uri": f"{release_uri}/{job_cfg.main_script}",
+            **{
+                key: [f"{release_uri}/{path}" for path in paths]
+                for key, paths in deploy_cfg.batch_kwargs.pyspark.items()
+            },
         },
         "runtime_config": {
             "properties": {
@@ -62,9 +71,9 @@ with DAG(
     # Run PySpark Batch on Dataproc Serverless
     run_pyspark_aggregation = DataprocCreateBatchOperator(
         task_id="run_pyspark_aggregation",
-        project_id=cfg.env.project_id,
-        region=cfg.env.region,
-        batch_id="pyspark-agg-{{ ds_nodash }}-{{ mcols_id }}".lower()[:63], # Generate a unique ID < 64 chars
+        project_id=env_cfg.project_id,
+        region=env_cfg.region,
+        batch_id="pyspark-agg-{{ ds_nodash }}".lower()[:63],
         batch=pyspark_batch_config,
     )
 

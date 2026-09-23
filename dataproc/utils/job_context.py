@@ -1,8 +1,10 @@
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pyspark.sql import SparkSession
 
-from common.config import Config
+from common.config import Config, _Root
 from common.logger import Logger
 from dataproc.utils.spark_session import SparkSessionBuilder
 from dataproc.utils.big_query import BigQueryIO
@@ -14,6 +16,7 @@ class JobContext:
 
     job_name: str
     cfg:      Config
+    cfg_job:  _Root
     logger:   Logger
     spark:    SparkSession
     bigquery: BigQueryIO  
@@ -21,12 +24,14 @@ class JobContext:
     @classmethod
     def create(cls, job_name: str) -> JobContext:
         cfg      = Config()
+        cfg_job  = cfg.jobs[job_name]
         logger   = Logger()
         spark    = SparkSessionBuilder.build(job_name)
         bigquery = BigQueryIO(spark)
         return cls(
-            cfg      = cfg, 
             job_name = job_name,
+            cfg      = cfg, 
+            cfg_job  = cfg_job, 
             logger   = logger,
             spark    = spark,
             bigquery = bigquery
