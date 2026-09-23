@@ -1,0 +1,5 @@
+defaultProject: dataengproj-500110
+defaultLocation: europe-north1
+defaultDataset: dataform
+defaultAssertionDataset: dataform_assertions
+dataformCoreVersion: 3.0.52
