@@ -20,13 +20,17 @@ class JobSubmitter:
         except Exception as e:
             raise Exception(f"Failed to initialize ReleaseManager with error: {e}") from e
 
+    @property
+    def release_version(self):
+        return self.release_mgr.release_version
+
     def release_path_join(self, path: Path | str) -> str:
         return self.release_mgr.gcs_path_join(path)
 
     def run(self, job_name: str):
-        cfg_job = ConfigJob(self.cfg.job(job_name))
+        cfg_job = ConfigJob(**Config().job(job_name))
         batch_id = f"{cfg_job.batch_name}-{uuid.uuid4().hex[:8]}"
-        main_script_uri = self.release_path_join(self.cfg_job.main_script)
+        main_script_uri = self.release_path_join(cfg_job.main_script)
 
         parent = f"projects/{self.cfg.env.project_id}/locations/{self.cfg.env.region}"
 
@@ -47,11 +51,8 @@ class JobSubmitter:
                 client_options={"api_endpoint": f"{self.cfg.env.region}-dataproc.googleapis.com:443"}
                 ) as client:
             
-            print(
-                "Submitting Dataproc job: job=%s; batch_id=%s; release_version=%s; parent=%s; batch=%s;",
-                job_name, batch_id, self.release_version, parent, 
-                json.dumps(batch, default=str, sort_keys=True)
-            )
+            print("Submitting Dataproc job: job=%s; batch_id=%s; release_version=%s; parent=%s; batch=%s;" % (
+                job_name, batch_id, self.release_version, parent, json.dumps(batch, default=str, sort_keys=True)))
             response = client.create_batch(
                 request={
                     "parent": parent,
