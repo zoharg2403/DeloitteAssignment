@@ -1,7 +1,7 @@
 
 gcs:
   bucket_name: deloitte-assignment-data
-  prefix: "incoming"
+  prefix: incoming
 
 local:
   root_dir: "tmp/create_data/data"
