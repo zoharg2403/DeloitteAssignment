@@ -10,7 +10,7 @@ from common.logger import Logger
 
 class GCSUpload:
 
-    cfg = Config.load("data_ingestion/data_ingestion.yaml")
+    cfg = Config.load("data_ingestion/data_upload.yaml")
     logger = Logger()
 
     gcs_bucket_name = cfg.gcs.bucket_name.strip("/").lstrip("gs://")
