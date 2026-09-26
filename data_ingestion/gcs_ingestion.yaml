@@ -1,0 +1,12 @@
+
+project_id: dataengproj-500110
+
+gcs:
+  bucket_name:   deloitte-assignment-data
+  incoming_blob: incoming
+  archive_blob:  data
+
+bigquery:
+  target_dataset: bronze
+  audit_dataset:  metadata
+  audit_table:    ingestion_audit

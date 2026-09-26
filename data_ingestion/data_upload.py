@@ -13,7 +13,7 @@ class GCSUpload:
     cfg = Config.load("data_ingestion/data_upload.yaml")
     logger = Logger()
 
-    gcs_bucket_name = cfg.gcs.bucket_name.strip("/").lstrip("gs://")
+    gcs_bucket_name = cfg.gcs.bucket_name.lstrip("gs://").strip("/")
     gcs_prefix = cfg.gcs.prefix.strip("/")
 
     @classmethod
@@ -60,7 +60,7 @@ class GCSUpload:
         if failed:
             cls.logger.info(f"File upload ended with {len(failed)} failed file(s)")
             for f, e in failed:
-                cls.logger.warning(f"  - {file}: {e}")
+                cls.logger.warning(f"  - {f}: {e}")
         else:
             cls.logger.info("All files uploaded successfully!")
 
