@@ -12,7 +12,7 @@ class JobSubmitter:
 
     def __init__(self):
         self.cfg = Config()
-        self.cfg_deploy = Config().dataproc_deploy
+        self.cfg_deploy = Config.load("./deploy.yaml")
 
         try:
             self.release_mgr = ReleaseManager(bucket_uri=self.cfg.env.scripts_bucket)

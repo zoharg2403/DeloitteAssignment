@@ -1,0 +1,11 @@
+
+gcs:
+  bucket_name: deloitte-assignment-data
+  prefix: "incoming"
+
+local:
+  root_dir: "tmp/create_data/data"
+  patterns:
+    - "*.csv"
+    # - "address/*.csv"
+    # - "users/*.csv"

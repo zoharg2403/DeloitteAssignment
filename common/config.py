@@ -57,19 +57,17 @@ class Config:
             raise TypeError(f"Configuration file must contain a mapping: {path}")
         return values
 
+    @classmethod
+    def load(cls, filepath: str | Path) -> _Root:
+        return _Root(cls._read_yaml(filepath))
+    
+
     def _load_base_config(self) -> _Root:
-        return _Root(self._read_yaml(self.default_config))
+        return self.load(self.default_config)
 
     @property
     def env(self):
         return getattr(self._root.env, self.environment)
-
-    @property
-    def dataproc_deploy(self):
-        cfg_yaml = Path("deploy") / "dataproc" / "deploy.yaml"
-        return _Root(self._read_yaml(cfg_yaml))
-
-
 
     def __getattr__(self, attr: str) -> Any:
         try:
