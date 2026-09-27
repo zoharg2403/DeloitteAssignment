@@ -21,8 +21,8 @@ class JobContext:
 
     @classmethod
     def create(cls, job_name: str) -> JobContext:
-        cfg      = Config()
-        cfg_job  = cfg.jobs[job_name]
+        cfg      = Config.load_from_zip("dataproc/dataproc.yaml")
+        cfg_job  = getattr(cfg.jobs, job_name)
         logger   = Logger()
         spark    = SparkSessionBuilder.build(job_name)
         bigquery = BigQueryIO(spark)

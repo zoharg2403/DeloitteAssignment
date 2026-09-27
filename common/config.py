@@ -31,23 +31,15 @@ class Config:
     """Load the selected environment and component YAML files."""
 
     default_dotenv = ".env"
-    default_env = 'dev'
-    default_config = 'dataproc/config.yaml'
-
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    default_env = "dev"
+    _root: _Root
     
     def __init__(self):
         load_dotenv(self.default_dotenv, override=True)
         self.environment = os.getenv("APP_ENV", self.default_env)
-        self._root = self._load_base_config()
 
     @staticmethod
-    def _read_yaml(path: Path | str):
+    def _read_yaml(path: Path | str) -> dict:
         path = Path(path)
         if not path.is_file():
             raise FileNotFoundError(f"Configuration file does not exist: {path}")
@@ -80,7 +72,6 @@ class Config:
 
 
 if __name__ == "__main__":
-    cfg = Config()
-    cfg.logger
-    cfg.dataproc_deploy
+    cfg = Config.load("dataproc/dataproc.yaml")
+
 

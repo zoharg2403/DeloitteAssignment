@@ -11,8 +11,8 @@ from dataproc_deploy.release_manager import ReleaseManager
 class JobSubmitter:
 
     def __init__(self):
-        self.cfg = Config()
-        self.cfg_deploy = Config.load("dataproc/deploy/deploy.yaml")
+        self.cfg        = Config.load("dataproc/dataproc.yaml")
+        self.cfg_deploy = Config.load("dataproc_deploy/deploy.yaml")
 
         try:
             self.release_mgr = ReleaseManager(
