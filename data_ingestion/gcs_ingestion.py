@@ -1,4 +1,7 @@
+
+import traceback
 from google.cloud import storage, bigquery
+from google.cloud.exceptions import BadRequest, NotFound
 
 from common.config import Config
 from common.logger import Logger
@@ -88,16 +91,24 @@ class GCSIngestion:
         for i, blob in enumerate(files, start=1):
             try:
                 self._process_file(blob)
+            except (BadRequest, NotFound) as e:
+                raise 
             except Exception as e:
-                failed.append((blob.name, e))
-
+                failed.append((blob.name, e.__class__.__name__, str(e), traceback.format_exc()))
+            
             if i == 1 or i % 3 == 0 or i == nfiles:
                 self.logger.info(f"Load file {i} / {nfiles}")
 
         if failed:
-            self.logger.info(f"File load ended with {len(failed)} failed file(s)")
-            for f, e in failed:
-                self.logger.warning(f"  - {f}: {e}")
+            self.logger.error(
+                f"File load ended with {len(failed)} failed file(s):" + "\n" + 
+                "\n".join(
+                    [
+                        f"FILE: {filename} failed with: {exc_type}: {exc_msg}\n{tb}"
+                        for filename, exc_type, exc_msg, tb in failed
+                    ]
+                )
+            )
         else:
             self.logger.info("All files loaded successfully!")
 
