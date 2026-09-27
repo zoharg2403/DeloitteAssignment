@@ -31,7 +31,7 @@ class BigQueryService:
 
 
     def load_file(self, source_uri: str, target_table: str) -> int:
-        new_table = self.is_table_exists(target_table)
+        table_exists = self.is_table_exists(target_table)
         job_config = bigquery.LoadJobConfig(
             source_format         = bigquery.SourceFormat.CSV,
             skip_leading_rows     = 1,
@@ -41,12 +41,14 @@ class BigQueryService:
             schema_update_options = [
                  bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
             ],
-            time_partitioning = bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.DAY)
+            time_partitioning = bigquery.TimePartitioning(
+                type_ = bigquery.TimePartitioningType.DAY, 
+                )
         )
         job = self.bq_client.load_table_from_uri(source_uri, target_table, job_config=job_config,)
         job.result()
 
-        if new_table:
+        if not table_exists:
             # add __ingested_at__ column with default value
             query = f"""
             ALTER TABLE `{target_table}`
