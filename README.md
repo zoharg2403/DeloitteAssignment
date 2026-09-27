@@ -42,6 +42,11 @@ npm install
 Set-Location ..
 ```
 
+## submodules
+
+add dataform submodule: 
+git submodule add https://github.com/zoharg2403/DeloitteAssignment-dataform.git dataform
+
 ## Authentication
 
 ```powershell
