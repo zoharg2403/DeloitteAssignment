@@ -40,7 +40,8 @@ class BigQueryService:
             create_disposition    = bigquery.CreateDisposition.CREATE_IF_NEEDED,
             schema_update_options = [
                  bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
-            ]
+            ],
+            time_partitioning = bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.DAY)
         )
         job = self.bq_client.load_table_from_uri(source_uri, target_table, job_config=job_config,)
         job.result()
