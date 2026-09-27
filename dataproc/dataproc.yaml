@@ -2,9 +2,9 @@
 env:
 
   dev:
-    env_name: dev
-    project_id: dataengproj-500110
-    region: us-central1
+    env_name:       dev
+    project_id:     dataengproj-500110
+    region:         us-central1
     scripts_bucket: gs://deloitte_assignment_dataproc_dev
 
     spark_session:
@@ -19,16 +19,16 @@ env:
 jobs:
 
   users_per_city:
-    batch_name: users-per-city
+    batch_name:  users-per-city
     main_script: "dataproc/jobs/users_per_city.py"
 
     source:
       dataset: gold
-      table: gold_users_address
+      table:   users_address
 
     target:
       dataset: gold
-      table: gold_users_per_city
+      table:   users_per_city
 
     write_mode: overwrite
 
