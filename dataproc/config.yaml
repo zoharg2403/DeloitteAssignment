@@ -1,14 +1,4 @@
 
-logger:
-
-  name: applog
-  level: INFO
-  format: "%(asctime)s - %(module)s - %(levelname)s - %(message)s"
-  logs_dir: outputs/logs
-  to_stream: true
-  to_file: false
-
-
 env:
 
   dev:

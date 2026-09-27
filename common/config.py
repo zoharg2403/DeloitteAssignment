@@ -32,7 +32,7 @@ class Config:
 
     default_dotenv = ".env"
     default_env = 'dev'
-    default_config = 'config.yaml'
+    default_config = 'dataproc/config.yaml'
 
     _instance = None
 

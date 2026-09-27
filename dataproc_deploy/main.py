@@ -5,17 +5,23 @@ from pathlib import Path
 from google.cloud import dataproc_v1
 
 from common.config import Config
-from deploy.dataproc.release_manager import ReleaseManager
+from dataproc_deploy.release_manager import ReleaseManager
 
 
 class JobSubmitter:
 
     def __init__(self):
         self.cfg = Config()
-        self.cfg_deploy = Config.load("./deploy.yaml")
+        self.cfg_deploy = Config.load("dataproc/deploy/deploy.yaml")
 
         try:
-            self.release_mgr = ReleaseManager(bucket_uri=self.cfg.env.scripts_bucket)
+            self.release_mgr = ReleaseManager(
+                bucket_uri        = self.cfg.env.scripts_bucket,
+                create_new        = self.cfg_deploy.release.create_new,
+                assets            = self.cfg_deploy.assets,
+                ignore_patterns   = self.cfg_deploy.ignore_patterns,
+                requested_version = self.cfg_deploy.release.requested_version,
+                )
         except Exception as e:
             raise Exception(f"Failed to initialize ReleaseManager with error: {e}") from e
 
@@ -69,6 +75,6 @@ class JobSubmitter:
 
 
 if __name__ == "__main__":
-    job_name="users_per_city" # must match the "configs/dataproc/jobs/{job_name}.yaml"
+    job_name="users_per_city" # must match the "dataproc/config.yaml/jobs:{job_name}.py"
     submitter = JobSubmitter()
     submitter.run(job_name)

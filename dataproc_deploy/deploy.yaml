@@ -1,18 +1,17 @@
 
 release:
 
-  create_new: True
+  create_new:        False
   requested_version: 'latest'  # unused when create_new == true
 
 
 assets:
-
 # define files to include/exclude in the release if create_new == true
 # should contain scripts for all jobs
 # path should be relative to repo root
   include:
     - dataproc/jobs/
-    - config.yaml
+    - dataproc/config.yaml
     - .env
   include_zipped:
     - dataproc/
@@ -32,10 +31,12 @@ batch_kwargs:
 
   pyspark:
     python_file_uris:
-      - dataproc.zip
+      - dataproc/utils.zip
       - common.zip
     file_uris:
       - .env
-      - config.yaml
+      - dataproc/config.yaml
+  
   runtime_config_properties:
-    spark.sql.adaptive.enabled: False
+    spark.sql.adaptive.enabled: True 
+    
