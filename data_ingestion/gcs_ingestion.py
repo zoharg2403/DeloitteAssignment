@@ -5,7 +5,7 @@ from google.cloud.exceptions import BadRequest, NotFound
 
 from common.config import Config
 from common.logger import Logger
-from data_ingestion.utils.audit_service import AuditService, AuditStatus
+from data_ingestion.utils.audit_service import AuditService, AuditStatus, Metadata
 from data_ingestion.utils.gcs_service import GCSService
 from data_ingestion.utils.bq_service import BigQueryService
 
@@ -29,60 +29,63 @@ class GCSIngestion:
             audit_table   = self.cfg.bigquery.audit_table,
             )
         self.gcs_service = GCSService(
-            gcs_client    = storage.Client(project=self.cfg.project_id),
-            bucket_name   = self.cfg.gcs.bucket_name.lstrip("gs://").strip("/"), 
-            incoming_blob = self.cfg.gcs.incoming_blob.strip("/"), 
-            archive_blob  = self.cfg.gcs.archive_blob.strip("/"), 
+            gcs_client  = storage.Client(project=self.cfg.project_id),
+            bucket_name = self.cfg.gcs.bucket_name.lstrip("gs://").strip("/"), 
+            **self.cfg.gcs.blobs  
+            )
+
+    def get_blob_metadata(self, blob: storage.Blob) -> Metadata:
+        file_path = f"gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{blob.name}"
+        file_name = blob.name.rsplit("/", 1)[-1]
+        file_md5 = blob.md5_hash
+        target_dataset = self.cfg.bigquery.target_dataset
+        target_table = file_name.split("_")[0]
+        return Metadata(
+            file_path      = file_path,
+            file_name      = file_name,
+            file_md5       = file_md5,
+            target_dataset = target_dataset,
+            target_table   = target_table,
             )
 
     def _process_file(self, blob: storage.Blob) -> None:
-        filepath = f"gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{blob.name}"
-        filename = blob.name.rsplit("/", 1)[-1]
-        file_md5 = blob.md5_hash
-        table_name = filename.split("_")[0]
-        target_table = self.bq_service.get_target_table(table_name)
+        blob_md = self.get_blob_metadata(blob)
 
-        if self.audit_service.is_processed(file_path=filepath, file_md5=file_md5):
+        if self.audit_service.is_processed(blob_md):
             self.audit_service.insert(
-                file_path    = filepath, 
-                file_name    = filename, 
-                target_table = target_table, 
-                rows_loaded  = 0, 
-                status       = AuditStatus.SKIP, 
-                file_md5     = file_md5
+                blob_metadata = blob_md,
+                rows_loaded   = 0, 
+                status        = AuditStatus.SKIP,
+                error_message = "file_md5 match a file that was already loaded to target table" 
             )
-            self.gcs_service.archive_file(blob)
+            self.gcs_service.archive_skipped(blob)
             return
 
-        source_uri = self.gcs_service.get_gcs_uri(blob)
+        source_uri = f"gs://{blob.bucket.name}/{blob.name}"
+        target_table = f"{self.cfg.project_id}.{blob_md.target_dataset}.{blob_md.target_table}"
         try:
             rows_loaded = self.bq_service.load_file(
                 source_uri = source_uri,
                 target_table = target_table, 
             )
             self.audit_service.insert(
-                file_path = filepath, 
-                file_name = filename, 
-                target_table = target_table, 
-                rows_loaded = rows_loaded, 
-                status = AuditStatus.SUCCESS, 
-                file_md5 = file_md5
+                blob_metadata = blob_md,
+                rows_loaded   = rows_loaded, 
+                status        = AuditStatus.SUCCESS, 
             )
-            self.gcs_service.archive_file(blob)
+            self.gcs_service.archive_processed(blob)
         except Exception as e:
             self.audit_service.insert(
-                file_path = filepath, 
-                file_name = filename, 
-                target_table = target_table, 
+                blob_metadata = blob_md,
                 rows_loaded = 0, 
                 status = AuditStatus.FAILED, 
-                file_md5 = file_md5, 
                 error_message=str(e)
             )
+            self.gcs_service.archive_failed(blob)
             raise e
 
     def run(self):
-        self.logger.info(f"Starting data ingestion (source=gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{self.cfg.gcs.incoming_blob})")
+        self.logger.info(f"Starting data ingestion (source=gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{self.cfg.gcs.blobs.incoming_blob})")
         files = self.gcs_service.list_incoming_files()
         nfiles = len(files)
         self.logger.info(f"{nfiles} files found in source bucket")
