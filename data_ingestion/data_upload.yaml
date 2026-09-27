@@ -4,7 +4,7 @@ gcs:
   prefix:      incoming
 
 local:
-  root_dir: "tmp/create_data/data"
+  root_dir: "tmp/data"
   patterns:
     - "*.csv"
     # - "address/*.csv"

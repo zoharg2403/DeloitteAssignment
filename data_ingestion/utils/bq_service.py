@@ -28,9 +28,6 @@ class BigQueryService:
         dataset = bigquery.Dataset(self.dataset)
         self.bq_client.create_dataset(dataset, exists_ok=True)
 
-    def get_target_table(self, table_name: str) -> str:
-        return f"{self.dataset}.{table_name}"
-
     def load_file(self, source_uri: str, target_table: str) -> int:
         job_config = bigquery.LoadJobConfig(
             source_format      = self.source_format,
