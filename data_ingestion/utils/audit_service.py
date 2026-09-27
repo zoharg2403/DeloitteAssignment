@@ -93,9 +93,9 @@ class AuditService:
     def insert(self, blob_metadata: Metadata, rows_loaded: int, status: AuditStatus, error_message: str | None = None):
         query = f"""
         INSERT INTO `{self.audit_table}`
-        (file_path, file_name, file_md5, target_dataset, target_table, rows_loaded, processed_ts, status, error_message)
+        (file_path, file_name, file_md5, target_dataset, target_table, rows_loaded, status, error_message)
         VALUES
-        (@file_path, @file_name, @file_md5, @target_dataset, @target_table, @rows_loaded, CURRENT_TIMESTAMP(), @status, @error_message)
+        (@file_path, @file_name, @file_md5, @target_dataset, @target_table, @rows_loaded, @status, @error_message)
         """
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
