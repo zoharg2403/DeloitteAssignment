@@ -63,7 +63,7 @@ class AuditService:
                 for f in fields(Metadata)
             ],
             bigquery.SchemaField("rows_loaded", "INT64"),
-            bigquery.SchemaField("processed_ts", "TIMESTAMP"),
+            bigquery.SchemaField("processed_ts", "TIMESTAMP", default_value_expression="CURRENT_TIMESTAMP()"),
             bigquery.SchemaField("status", "STRING"),
             bigquery.SchemaField("error_message", "STRING"),
             ]
