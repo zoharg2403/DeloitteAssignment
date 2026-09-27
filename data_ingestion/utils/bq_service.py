@@ -11,12 +11,6 @@ class BigQueryService:
 
         self.dataset = f"{self.project_id}.{self.target_dataset}"
 
-        self.source_format      = bigquery.SourceFormat.CSV
-        self.skip_leading_rows  = 1
-        self.autodetect         = True
-        self.write_disposition  = bigquery.WriteDisposition.WRITE_APPEND
-        self.create_disposition = bigquery.CreateDisposition.CREATE_IF_NEEDED
-
         self._ensure_dataset_exists()
 
     def _ensure_dataset_exists(self):
@@ -28,15 +22,46 @@ class BigQueryService:
         dataset = bigquery.Dataset(self.dataset)
         self.bq_client.create_dataset(dataset, exists_ok=True)
 
+    def is_table_exists(self, table: str) -> bool:
+        try:
+            self.bq_client.get_table(table)
+            return True
+        except NotFound:
+            return False
+
+
     def load_file(self, source_uri: str, target_table: str) -> int:
+        new_table = self.is_table_exists(target_table)
         job_config = bigquery.LoadJobConfig(
-            source_format      = self.source_format,
-            skip_leading_rows  = self.skip_leading_rows,
-            autodetect         = self.autodetect,
-            write_disposition  = self.write_disposition,
-            create_disposition = self.create_disposition,
+            source_format         = bigquery.SourceFormat.CSV,
+            skip_leading_rows     = 1,
+            autodetect            = True,
+            write_disposition     = bigquery.WriteDisposition.WRITE_APPEND,
+            create_disposition    = bigquery.CreateDisposition.CREATE_IF_NEEDED,
+            schema_update_options = [
+                 bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+            ]
         )
         job = self.bq_client.load_table_from_uri(source_uri, target_table, job_config=job_config,)
         job.result()
+
+        if new_table:
+            # add __ingested_at__ column with default value
+            query = f"""
+            ALTER TABLE `{target_table}`
+            ADD COLUMN IF NOT EXISTS __ingested_at__ TIMESTAMP;
+            """
+            self.bq_client.query(query).result()
+            query = f"""
+            ALTER TABLE `{target_table}`
+            ALTER COLUMN __ingested_at__ SET DEFAULT CURRENT_TIMESTAMP();
+            """
+            self.bq_client.query(query).result()
+            query = f"""
+            UPDATE `{target_table}`
+            SET __ingested_at__ = CURRENT_TIMESTAMP()
+            WHERE __ingested_at__ IS NULL;
+            """
+            self.bq_client.query(query).result()
 
         return job.output_rows
