@@ -31,7 +31,7 @@ batch_kwargs:
 
   pyspark:
     python_file_uris:
-      - dataproc/utils.zip
+      - dataproc.zip
       - common.zip
     file_uris:
       - .env
