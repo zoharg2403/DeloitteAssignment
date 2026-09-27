@@ -13,7 +13,6 @@ env:
       materialization_dataset: dataproc_materialization
 
     bigquery:
-      # location: EU
       temp_bucket: gs://deloitte_assignment_dataproc_temp
 
 
