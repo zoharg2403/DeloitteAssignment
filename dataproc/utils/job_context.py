@@ -20,8 +20,8 @@ class JobContext:
     bigquery: BigQueryIO  
 
     @classmethod
-    def create(cls, job_name: str) -> JobContext:
-        cfg      = Config.load_from_zip("dataproc/dataproc.yaml")
+    def create(cls, job_name: str) -> "JobContext":
+        cfg      = Config.load("dataproc/dataproc.yaml")
         cfg_job  = getattr(cfg.jobs, job_name)
         logger   = Logger()
         spark    = SparkSessionBuilder.build(job_name)
@@ -35,7 +35,7 @@ class JobContext:
             bigquery = bigquery
             )
 
-    def __enter__(self) -> JobContext:
+    def __enter__(self):
         return self
 
     def __exit__(self):

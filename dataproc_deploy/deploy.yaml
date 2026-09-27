@@ -11,7 +11,6 @@ assets:
 # path should be relative to repo root
   include:
     - dataproc/jobs/
-    - dataproc/config.yaml
     - .env
   include_zipped:
     - dataproc/
@@ -35,7 +34,6 @@ batch_kwargs:
       - common.zip
     file_uris:
       - .env
-      - dataproc/config.yaml
   
   runtime_config_properties:
     spark.sql.adaptive.enabled: True 

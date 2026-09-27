@@ -7,7 +7,7 @@ from common.logger import Logger
 
 class SparkSessionBuilder:
 
-    cfg    = Config.load_from_zip("dataproc/dataproc.yaml")
+    cfg    = Config.load("dataproc/dataproc.yaml")
     cfg_ss = cfg.env.spark_session
     logger = Logger()
 

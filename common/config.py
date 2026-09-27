@@ -1,6 +1,8 @@
 
 import json
 import os
+import importlib.util
+import pkgutil
 from pathlib import Path
 from typing import Any
 
@@ -41,21 +43,40 @@ class Config:
     @staticmethod
     def _read_yaml(path: Path | str) -> dict:
         path = Path(path)
-        if not path.is_file():
-            raise FileNotFoundError(f"Configuration file does not exist: {path}")
         with path.open(encoding="utf-8") as file:
             values = yaml.safe_load(file) or {}
         if not isinstance(values, dict):
             raise TypeError(f"Configuration file must contain a mapping: {path}")
         return values
 
-    @classmethod
-    def load(cls, filepath: str | Path) -> _Root:
-        return _Root(cls._read_yaml(filepath))
-    
+    @staticmethod
+    def _read_yaml_from_zip(path: Path | str) -> dict:
+        path = Path(path)
+        package_name = path.parts[0]
+        resource_path = "/".join(path.parts[1:])
+        try:
+            binary_data = pkgutil.get_data(package_name, resource_path)
+        except FileNotFoundError as error:
+            raise FileNotFoundError(f"Configuration file does not exist inside package '{package_name}': {resource_path}") from error
+        if binary_data is None:
+            raise FileNotFoundError(f"Configuration file does not exist inside package '{package_name}': {resource_path}")
+        raw_text = binary_data.decode("utf-8")
+        values = yaml.safe_load(raw_text) or {}
+        return values
 
-    def _load_base_config(self) -> _Root:
-        return self.load(self.default_config)
+    @classmethod
+    def load(cls, filepath: str | Path) -> "Config":
+        path = Path(filepath)
+        if path.is_file():
+            values = cls._read_yaml(path)
+        elif path.parts and path.parts[0].isidentifier() and importlib.util.find_spec(path.parts[0]) is not None:
+            values = cls._read_yaml_from_zip(path)
+        else:
+            raise FileNotFoundError(f"Configuration file does not exist locally or in an importable package: {path}")
+
+        config = cls()
+        config._root = _Root(values)
+        return config
 
     @property
     def env(self):
