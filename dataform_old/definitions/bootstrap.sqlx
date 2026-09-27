@@ -1,9 +1,0 @@
-config {
-  type: "operations",
-  hasOutput: false,
-  description: "Bootstrap script to create datasets if doesn't exists" 
-}
-
-CREATE SCHEMA IF NOT EXISTS `bronze`;
-CREATE SCHEMA IF NOT EXISTS `silver`;
-CREATE SCHEMA IF NOT EXISTS `gold`;

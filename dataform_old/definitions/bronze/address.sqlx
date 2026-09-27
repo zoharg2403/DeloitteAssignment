@@ -1,6 +1,0 @@
-config {
-  type: "declaration",
-  schema: "bronze",
-  name: "bronze_address",
-  description: "Raw address loaded from GCS via data transfer"
-}
