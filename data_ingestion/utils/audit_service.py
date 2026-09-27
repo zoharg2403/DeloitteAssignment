@@ -63,12 +63,20 @@ class AuditService:
                 for f in fields(Metadata)
             ],
             bigquery.SchemaField("rows_loaded", "INT64"),
-            bigquery.SchemaField("processed_ts", "TIMESTAMP", default_value_expression="CURRENT_TIMESTAMP()"),
+            bigquery.SchemaField("ingested_at", "TIMESTAMP", default_value_expression="CURRENT_TIMESTAMP()"),
             bigquery.SchemaField("status", "STRING"),
             bigquery.SchemaField("error_message", "STRING"),
             ]
         
         table = bigquery.Table(self.audit_table, schema=schema)
+        table.clustering_fields = ["target_dataset", "target_table", "file_md5"]
+        # table.require_partition_filter = True
+        table.time_partitioning = bigquery.TimePartitioning(
+            type_ = bigquery.TimePartitioningType.DAY, 
+            field = "ingested_at", 
+            # expiration_ms = 365 * 24 * 60 * 60 * 1000 # 365 days [ms]
+            )
+
         self.bq_client.create_table(table)  
 
     def is_processed(self, blob_metadata: Metadata) -> bool:
