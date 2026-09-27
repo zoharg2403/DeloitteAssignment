@@ -1,6 +1,4 @@
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from pyspark.sql import SparkSession
 
@@ -49,4 +47,4 @@ class JobContext:
 
 
 if __name__ == "__main__":
-    JobContext().create('users_per_city')
+    JobContext.create('users_per_city')
