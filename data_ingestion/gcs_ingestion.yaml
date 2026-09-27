@@ -10,6 +10,6 @@ gcs:
     failed_blob:    failed
 
 bigquery:
-  target_dataset: bronze
+  target_dataset: staging
   audit_dataset:  metadata
   audit_table:    ingestion_audit
