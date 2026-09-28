@@ -11,10 +11,10 @@ dataproc_deploy:
       - .env
     python_packages:
     # Upload as .zip - Spark adds these files directly to the Python path (sys.path), imports modules directly from inside the compressed .zip file structure.
-      - dataproc/utils/
+      - dataproc/
       - common/
     archive:
-    # Upload as .zip - Spark automatically extracts the contents into the local filesystem (subdirectory named after the archive file).
+    # Upload as .zip - Spark automatically extracts the contents into the local filesystem (subdirectory named after the archive file - including the '.zip').
       - config/
   
   ignore_patterns:
