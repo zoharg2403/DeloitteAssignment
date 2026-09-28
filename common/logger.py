@@ -6,17 +6,21 @@ from common.config import Config
 
 class Logger:
 
-    _instance = None
+    _instance    = None
+    _initialized = False
 
     def __new__(cls):
-        if cls._instance is None:
+        if not cls._initialized and cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self):
-        self.cfg      = Config.load("common/common.yaml").logger
+        if self._initialized:
+            return
+        self.cfg      = Config().load("config/common.yaml").logger
         self.filepath = self._get_filepath() if self.cfg.to_file else None
         self.logger   = self._init_logger()
+        self._initialized = True
 
     def _get_filepath(self) -> Path:
         dir_ = Path(self.cfg.logs_dir)
@@ -53,3 +57,5 @@ class Logger:
 if __name__ == "__main__":
     logger = Logger()
     logger.info("Example")
+    logger2 = Logger()
+    logger2.info("Example")
