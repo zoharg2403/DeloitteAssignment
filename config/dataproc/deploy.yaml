@@ -2,9 +2,8 @@ dataproc_deploy:
   
   release:
     local_dir: "outputs/release"
-    create_new: true  # TODO
-    requested_version: latest
-  
+    create_new: false
+    requested_version: latest  # release-20260928_154309-1450ab7
   assets:
     files:
       - dataproc/jobs/
@@ -32,6 +31,6 @@ dataproc_deploy:
       file_uris:
         - .env
       archive_uris:
-        - config.zip
+        - config.zip#config
     runtime_config_properties:
-      spark.sql.adaptive.enabled: false  # TODO
+      spark.sql.adaptive.enabled: true

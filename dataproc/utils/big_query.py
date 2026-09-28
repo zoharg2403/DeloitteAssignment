@@ -39,7 +39,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.buckets.dataproc_temp)
+                .option("temporaryGcsBucket", self.temp_bucket)
                 .mode(mode)
                 .save()
             )
@@ -56,7 +56,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.buckets.dataproc_temp)
+                .option("temporaryGcsBucket", self.temp_bucket)
                 .option("partitionField", partition_field)
                 .mode(mode)
                 .save()
@@ -66,6 +66,3 @@ class BigQueryIO:
             raise
         self.logger.info(f"Finished writing partitioned BigQuery table '{table_path}'")
 
-
-if __name__ == "__main__":
-    BigQueryIO()
