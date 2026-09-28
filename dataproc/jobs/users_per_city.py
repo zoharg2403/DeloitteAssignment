@@ -10,7 +10,7 @@ def main():
     target_fullname = f"{ctx.cfg_job.target.dataset}.{ctx.cfg_job.target.table}"
 
     try:
-        ctx.logger.info(f"Starting users_per_city job, with tables: source='{source_fullname}', target='{target_fullname}')")
+        ctx.logger.info(f"Starting users_per_city job, with tables: source='{source_fullname}', target='{target_fullname}'")
 
         loc_cols = ["country", "region", "city"]
         users_per_city = (
