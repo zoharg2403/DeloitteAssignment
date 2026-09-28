@@ -1,27 +1,29 @@
 
 from pyspark.sql import SparkSession
 
-from common.config import Config
 from common.logger import Logger
 
 
 class SparkSessionBuilder:
 
-    cfg    = Config.load("dataproc/dataproc.yaml")
-    cfg_ss = cfg.env.spark_session
     logger = Logger()
 
     @classmethod
-    def build(cls, job_name: str):
+    def build(
+        cls, 
+        app_name: str, 
+        views_enabled: bool | str, 
+        materialization_dataset : str
+        ):
+
         """Creates or retrieves a Spark session with BigQuery pre-configured."""
-        app_name = cls.cfg_ss.app_name
         cls.logger.info(f"Build Spark session '{app_name}'")
         try:
             spark = (
                 SparkSession.builder
-                .appName(cls.cfg_ss.app_name + f"-{job_name}")
-                .config("viewsEnabled", str(cls.cfg_ss.views_enabled).lower())
-                .config("materializationDataset", f"{cls.cfg.env.project_id}.{cls.cfg_ss.materialization_dataset}")
+                .appName(app_name)
+                .config("viewsEnabled", str(views_enabled).lower())
+                .config("materializationDataset", materialization_dataset)
                 .getOrCreate()
             )
         except Exception as e:

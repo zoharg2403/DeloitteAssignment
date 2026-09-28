@@ -7,12 +7,14 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 from common.config import _Root
+from dataproc_deploy.packager import Packager
 
 
 class ReleaseManager:
 
-    def __init__(self, bucket_uri: str, create_new: bool, assets: _Root, ignore_patterns: _Root, requested_version: str | None = None):
+    def __init__(self, bucket_uri: str, local_dir: str, create_new: bool, assets: _Root, ignore_patterns: _Root, requested_version: str | None = None):
         self.bucket_uri        = bucket_uri.strip('/')
+        self.local_dir         = local_dir
         self.create_new        = create_new
         self.requested_version = requested_version
         self.assets            = assets
@@ -45,77 +47,16 @@ class ReleaseManager:
             self.release_uri_ = f"{self.bucket_uri}/{self.release_version.strip('/')}"
         return self.release_uri_
 
-    def gcs_path_join(self, path: Path | str) -> str:
-        return f"{self.release_uri}/{Path(path).as_posix().strip('/')}"
-
-    def upload_file(self, local: str | Path, remote: str | Path):
-        """Upload a local file to GCS and return its GCS URI."""
-        local, remote = str(local), str(remote)
-
-        res = subprocess.run(
-            [self.gcloud, "storage", "cp", local, remote],
-            capture_output=True,
-            text=True
+    def create_new_release(self) -> str:
+        """Create a new release"""
+        zp = Packager(
+            release_uri     = self.release_uri,
+            local_dir       = Path(self.local_dir) / self.release_version, 
+            assets          = self.assets,
+            ignore_patterns = self.ignore_patterns
         )
-        if res.returncode != 0:
-            details = res.stderr.strip() or res.stdout.strip()
-            raise RuntimeError(f"GCS upload failed for {local} -> {remote}.\n{details}")
-
-    def is_ignored(self, path: Path | str):
-        path = Path(path).resolve()
-
-        for dir_ in self.ignore_patterns.dirs:
-            try:
-                # If path is a subpath of dir_, this will succeed
-                path.relative_to(dir_)
-                return True
-            except ValueError:
-                pass
-
-        if path.is_file():
-            ext = path.suffix.lower()
-            if ext in self.ignore_patterns.extensions:
-                return True
-
-        return False
-
-    def zip_folder(self, folder: str | Path) -> str:
-        """Zip a folder and return the path to the zip file."""
-        folder = Path(folder)
-        if not folder.is_dir():
-            raise NotADirectoryError(f"Folder does not exist: {folder}")
-
-        zip_path = folder.parent / f"{folder.name}.zip"
-        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            for path in folder.rglob("*"):
-                if path.is_file() and not self.is_ignored(path):
-                    zip_file.write(path, path)
-
-        return zip_path
-
-    def _create_new(self) -> str:
-        """Create a release"""
-
-        # include
-        for p in self.assets.include:
-            source = Path(p)
-
-            if source.is_file():
-                target = self.gcs_path_join(source)
-                self.upload_file(source, target)
-
-            elif source.is_dir():
-                for src in source.rglob('*'):
-                    if src.is_file() and not self.is_ignored(src):
-                        target = self.gcs_path_join(src)
-                        self.upload_file(src, target)
-
-        # include_zipped
-        for p in self.assets.include_zipped:
-            source = self.zip_folder(p)
-            target = self.gcs_path_join(source)
-            self.upload_file(source, target)
-
+        zp.create()
+    
     def _get_latest(self):
         """Get the latest release in the bucket"""
         res = subprocess.run(
@@ -147,7 +88,7 @@ class ReleaseManager:
     def _resolve(self) -> str:
         """Select and validate the concrete release used by this run."""
         if self.create_new:
-            self._create_new()
+            self.create_new_release()
 
         elif self.requested_version == "latest":
             self._get_latest()

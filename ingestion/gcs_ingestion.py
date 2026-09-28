@@ -5,40 +5,43 @@ from google.cloud.exceptions import BadRequest, NotFound
 
 from common.config import Config
 from common.logger import Logger
-from data_ingestion.utils.audit_service import AuditService, AuditStatus, Metadata
-from data_ingestion.utils.gcs_service import GCSService
-from data_ingestion.utils.bq_service import BigQueryService
+from ingestion.utils.audit_service import AuditService, AuditStatus, Metadata
+from ingestion.utils.gcs_service import GCSService
+from ingestion.utils.bq_service import BigQueryService
 
 
 class GCSIngestion:
 
     def __init__(self):
-        self.cfg = Config.load("data_ingestion/gcs_ingestion.yaml")
+        self.cfg = Config().load("config/ingestion.yaml")
         self.logger = Logger()
 
-        bq_client = bigquery.Client(project=self.cfg.project_id)
+        self.project_id = self.cfg.env.project_id
+        self.ingestion_bucket = self.cfg.env.buckets.data_storage.lstrip("gs://").strip("/")
+
+        bq_client = bigquery.Client(project=self.project_id)
         self.bq_service = BigQueryService(
             bq_client      = bq_client,
-            project_id     = self.cfg.project_id,
-            target_dataset = self.cfg.bigquery.target_dataset,
+            project_id     = self.project_id,
+            target_dataset = self.cfg.ingestion.bigquery.target_dataset,
             )
         self.audit_service = AuditService(
             bq_client     = bq_client, 
-            project_id    = self.cfg.project_id,
-            audit_dataset = self.cfg.bigquery.audit_dataset,
-            audit_table   = self.cfg.bigquery.audit_table,
+            project_id    = self.project_id,
+            audit_dataset = self.cfg.ingestion.bigquery.audit_dataset,
+            audit_table   = self.cfg.ingestion.bigquery.audit_table,
             )
         self.gcs_service = GCSService(
-            gcs_client  = storage.Client(project=self.cfg.project_id),
-            bucket_name = self.cfg.gcs.bucket_name.lstrip("gs://").strip("/"), 
-            **self.cfg.gcs.blobs  
+            gcs_client  = storage.Client(project=self.project_id),
+            bucket_name = self.ingestion_bucket, 
+            **self.cfg.ingestion.gcs.blobs
             )
 
     def get_blob_metadata(self, blob: storage.Blob) -> Metadata:
-        file_path = f"gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{blob.name}"
+        file_path = f"gs://{self.ingestion_bucket}/{blob.name}"
         file_name = blob.name.rsplit("/", 1)[-1]
         file_md5 = blob.md5_hash
-        target_dataset = self.cfg.bigquery.target_dataset
+        target_dataset = self.cfg.ingestion.bigquery.target_dataset
         target_table = file_name.split("_")[0]
         return Metadata(
             file_path      = file_path,
@@ -62,7 +65,7 @@ class GCSIngestion:
             return
 
         source_uri = f"gs://{blob.bucket.name}/{blob.name}"
-        target_table = f"{self.cfg.project_id}.{blob_md.target_dataset}.{blob_md.target_table}"
+        target_table = f"{self.project_id}.{blob_md.target_dataset}.{blob_md.target_table}"
         try:
             rows_loaded = self.bq_service.load_file(
                 source_uri = source_uri,
@@ -85,7 +88,7 @@ class GCSIngestion:
             raise e
 
     def run(self):
-        self.logger.info(f"Starting data ingestion (source=gs://{self.cfg.gcs.bucket_name.lstrip("gs://").strip("/")}/{self.cfg.gcs.blobs.incoming_blob})")
+        self.logger.info(f"Starting data ingestion (source=gs://{self.ingestion_bucket}/{self.gcs_service.incoming_blob})")
         files = self.gcs_service.list_incoming_files()
         nfiles = len(files)
         self.logger.info(f"{nfiles} files found in source bucket")

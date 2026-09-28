@@ -1,0 +1,13 @@
+pipelines:
+  dag:
+    dag_id: dataform_to_dataproc_serverless_pipeline
+    schedule_interval: "0 6 * * *"
+    catchup: false
+  dag_args:
+    owner: data-eng
+    start_date: 01-01-2026
+    retries: 1
+    retry_delay_sec: 300
+  dataform:
+    repository_id: dataengproj-500110
+    git_commitish: main

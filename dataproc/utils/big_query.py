@@ -1,29 +1,28 @@
 
 from pyspark.sql import DataFrame, SparkSession
 
-from common.config import Config
 from common.logger import Logger
-from dataproc.utils.spark_session import SparkSessionBuilder
 
 
 class BigQueryIO:
     
-    cfg = Config.load("dataproc/dataproc.yaml").env
+    def __init__(self, project_id: str, temp_bucket: str, spark_session: SparkSession | None = None):
+        self.project_id    = project_id
+        self.temp_bucket   = temp_bucket
+        self.spark_session = spark_session
 
-    def __init__(self, spark: SparkSession | None = None):
-        self.spark = spark or SparkSessionBuilder.build()
         self.logger = Logger()
-        self.logger.debug(f"Initialized BigQuery client for project '{self.cfg.project_id}'")
+        self.logger.debug(f"Initialized BigQuery client for project '{self.project_id}'")
 
     def _table_path(self, dataset, table):
-        return f"{self.cfg.project_id}.{dataset}.{table}"
+        return f"{self.project_id}.{dataset}.{table}"
 
     def read(self, dataset, table):
         table_path = self._table_path(dataset, table)
         self.logger.info(f"Reading BigQuery table '{table_path}'")
         try:
             dataframe = (
-                self.spark.read.format("bigquery")
+                self.spark_session.read.format("bigquery")
                 .option("table", table_path)
                 .load()
             )
@@ -40,7 +39,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.bigquery.temp_bucket)
+                .option("temporaryGcsBucket", self.cfg.buckets.dataproc_temp)
                 .mode(mode)
                 .save()
             )
@@ -57,7 +56,7 @@ class BigQueryIO:
             (
                 df.write.format("bigquery")
                 .option("table", table_path)
-                .option("temporaryGcsBucket", self.cfg.bigquery.temp_bucket)
+                .option("temporaryGcsBucket", self.cfg.buckets.dataproc_temp)
                 .option("partitionField", partition_field)
                 .mode(mode)
                 .save()

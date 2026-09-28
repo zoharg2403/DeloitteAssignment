@@ -1,0 +1,37 @@
+dataproc_deploy:
+  
+  release:
+    local_dir: "outputs/release"
+    create_new: true  # TODO
+    requested_version: latest
+  
+  assets:
+    files:
+      - dataproc/jobs/
+      - .env
+    python_packages:
+    # Upload as .zip - Spark adds these files directly to the Python path (sys.path), imports modules directly from inside the compressed .zip file structure.
+      - dataproc/utils/
+      - common/
+    archive:
+    # Upload as .zip - Spark automatically extracts the contents into the local filesystem (subdirectory named after the archive file).
+      - config/
+  
+  ignore_patterns:
+    dirs:
+      - __pycache__
+    extensions:
+      - .pyc
+      - .zip
+  
+  batch_kwargs:
+    pyspark:
+      python_file_uris:
+        - dataproc.zip
+        - common.zip
+      file_uris:
+        - .env
+      archive_uris:
+        - config.zip
+    runtime_config_properties:
+      spark.sql.adaptive.enabled: false  # TODO

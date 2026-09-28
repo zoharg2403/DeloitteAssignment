@@ -11,16 +11,20 @@ from dataproc_deploy.release_manager import ReleaseManager
 class JobSubmitter:
 
     def __init__(self):
-        self.cfg        = Config.load("dataproc/dataproc.yaml")
-        self.cfg_deploy = Config.load("dataproc_deploy/deploy.yaml")
+        self.cfg = Config().load(
+            "config/dataproc/runtime.yaml",
+            "config/dataproc/jobs.yaml",
+            "config/dataproc/deploy.yaml",
+        )
 
         try:
             self.release_mgr = ReleaseManager(
-                bucket_uri        = self.cfg.env.scripts_bucket,
-                create_new        = self.cfg_deploy.release.create_new,
-                assets            = self.cfg_deploy.assets,
-                ignore_patterns   = self.cfg_deploy.ignore_patterns,
-                requested_version = self.cfg_deploy.release.requested_version,
+                bucket_uri        = self.cfg.env.buckets.dataproc_scripts,
+                local_dir         = self.cfg.dataproc_deploy.release.local_dir,
+                create_new        = self.cfg.dataproc_deploy.release.create_new,
+                requested_version = self.cfg.dataproc_deploy.release.requested_version,
+                assets            = self.cfg.dataproc_deploy.assets,
+                ignore_patterns   = self.cfg.dataproc_deploy.ignore_patterns,
                 )
         except Exception as e:
             raise Exception(f"Failed to initialize ReleaseManager with error: {e}") from e
@@ -29,13 +33,17 @@ class JobSubmitter:
     def release_version(self):
         return self.release_mgr.release_version
 
-    def release_path_join(self, path: Path | str) -> str:
-        return self.release_mgr.gcs_path_join(path)
+    @property
+    def release_uri(self) -> str:
+        return self.release_mgr.release_uri
+
+    def gcs_path_join(self, path: Path | str) -> str:
+        return f"{self.release_uri}/{Path(path).as_posix().strip('/')}"
 
     def run(self, job_name: str):
         cfg_job = getattr(self.cfg.jobs, job_name)
         batch_id = f"{cfg_job.batch_name}-{uuid.uuid4().hex[:8]}"
-        main_script_uri = self.release_path_join(cfg_job.main_script)
+        main_script_uri = self.gcs_path_join(cfg_job.main_script)
 
         parent = f"projects/{self.cfg.env.project_id}/locations/{self.cfg.env.region}"
 
@@ -43,14 +51,14 @@ class JobSubmitter:
             "pyspark_batch": {
                 "main_python_file_uri": main_script_uri,
                 **{
-                    k: [self.release_path_join(vi) for vi in v] 
-                   for k, v in self.cfg_deploy.batch_kwargs.pyspark.items()
+                    k: [self.gcs_path_join(vi) for vi in v] 
+                    for k, v in self.cfg.dataproc_deploy.batch_kwargs.pyspark.items() 
                    }
                 },
                 "runtime_config": {
                     "properties": {
                         k: str(v).lower() 
-                        for k, v in self.cfg_deploy.batch_kwargs.runtime_config_properties.items()
+                        for k, v in self.cfg.dataproc_deploy.batch_kwargs.runtime_config_properties.items()
                         }
                     }
                 }

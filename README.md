@@ -14,10 +14,14 @@ This project implements a small batch pipeline on Google Cloud:
 dataform/                 Dataform project and SQLX definitions
 dataproc/jobs/            Dataproc batch jobs
 dataproc/utils/           Spark and BigQuery helpers
-common/                   Shared configuration and logging
-deploy/dataproc/          Release and Dataproc submission code
-config.yaml               Environment and job configuration
-workflow_settings.yaml    Workflow/DAG settings
+common/                   Shared Python utilities
+config/                   Environment and owner-scoped application settings
+   environments.yaml       Shared project, region, and bucket identifiers
+   logging.yaml            Logging settings
+   ingestion/              Upload and ingestion settings
+   dataproc/               Runtime, jobs, and deployment settings
+   pipelines.yaml          Airflow DAG and Dataform repository settings
+dataproc_deploy/           Release and Dataproc submission code
 ```
 
 ## Prerequisites
@@ -56,10 +60,11 @@ gcloud.cmd config set project dataengproj-500110
 gcloud.cmd auth application-default print-access-token
 ```
 
-Update the project, region, and bucket values in `config.yaml` for another
-environment. The current development environment uses project
-`dataengproj-500110`, region `us-central1`, and the configured Dataproc scripts
-bucket.
+Set `APP_ENV` to select an environment; it defaults to `dev`. Shared project,
+region, and bucket identifiers are defined in `config/environments.yaml`.
+Component files contain only settings owned by that component. When code loads
+multiple component files, duplicate leaf keys are rejected by the config
+loader.
 
 ## Run Dataform
 
@@ -76,31 +81,38 @@ The Dataproc job expects the Dataform gold table
 
 ## Create a release and submit Dataproc
 
-`deploy/dataproc/deploy.yaml` controls release creation and the Dataproc batch
-options. With `release.create_new: True`, running the submitter uploads the
+`config/dataproc/deploy.yaml` controls release creation and the Dataproc batch
+options. With `dataproc_deploy.release.create_new: true`, running the submitter uploads the
 configured source files and packages before submitting the batch:
 
 ```powershell
-python -m deploy.dataproc.main
+python -m dataproc_deploy.main
 ```
 
-The submitter runs the `users_per_city` job from `config.yaml`. Each release is
-stored under a timestamped prefix in the configured scripts bucket. The job
-uses `dataproc.zip` and `common.zip` as Python file URIs and reads `config.yaml`
-and `.env` from the same release.
+The submitter runs the `users_per_city` job from
+`config/dataproc/jobs.yaml`. Each release is stored under a timestamped prefix
+in the configured scripts bucket. The job uses `dataproc.zip`, `common.zip`,
+and `config.zip` as Python file URIs; `.env` is passed as a file URI.
 
-To submit an existing release, set `release.create_new: False` and replace
-`release.requested_version: latest` in `deploy/dataproc/deploy.yaml` with the
-desired release version.
+To submit an existing release, set
+`dataproc_deploy.release.create_new: false` and replace
+`dataproc_deploy.release.requested_version: latest` in
+`config/dataproc/deploy.yaml` with the desired release version.
 
 ## Configuration
 
-The `users_per_city` job is configured in `config.yaml`:
+Configuration ownership is split by responsibility:
 
-- source: `gold.gold_users_address`
-- target: `gold.gold_users_per_city`
-- write mode: `overwrite`
-- schedule settings: `workflow_settings.yaml` (daily at 06:00)
+- `config/environments.yaml`: shared project, region, and bucket identifiers
+- `config/ingestion/upload.yaml` and `config/ingestion/gcs_ingestion.yaml`:
+   ingestion behavior
+- `config/dataproc/jobs.yaml`: Dataproc job inputs, outputs, and write mode
+- `config/dataproc/runtime.yaml` and `config/dataproc/deploy.yaml`:
+   Spark runtime and release/submission options
+- `config/pipelines.yaml`: DAG schedule and orchestration settings
+- `config/logging.yaml`: application logging
+- `dataform/workflow_settings.yaml`: Dataform-native project and dataset settings
 
-Logs are written to `outputs/logs` when file logging is enabled in
-`config.yaml`.
+The `users_per_city` job reads `gold.users_address` and writes
+`gold.users_per_city` with `overwrite` mode. Its DAG runs daily at 06:00.
+Logs are written to `outputs/logs` when file logging is enabled.

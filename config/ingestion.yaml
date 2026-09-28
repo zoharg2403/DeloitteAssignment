@@ -1,0 +1,19 @@
+ingestion:
+  
+  local:
+    root_dir: tmp/data
+    patterns:
+      - "*.csv"
+  
+  gcs:
+    blobs:
+      incoming_blob: incoming
+      processed_blob: data
+      skipped_blob: duplicates
+      failed_blob: failed
+  
+  bigquery:
+    target_dataset: bronze
+    audit_dataset: metadata
+    audit_table: ingestion_audit
+    

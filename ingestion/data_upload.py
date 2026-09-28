@@ -10,25 +10,27 @@ from common.logger import Logger
 
 class GCSUpload:
 
-    cfg = Config.load("data_ingestion/data_upload.yaml")
+    cfg = Config().load("config/ingestion.yaml")
     logger = Logger()
 
-    gcs_bucket_name = cfg.gcs.bucket_name.lstrip("gs://").strip("/")
-    gcs_prefix = cfg.gcs.prefix.strip("/")
+    gcs_bucket_name = cfg.env.buckets.data_storage.lstrip("gs://").strip("/")
+    gcs_prefix = cfg.ingestion.gcs.blobs.incoming_blob.strip("/")
+
+    local_dir = Path(cfg.ingestion.local.root_dir)
+    assert local_dir.is_dir(), NotADirectoryError("config/ingestion.yaml/ingestion.local.root_dir must be a directory path")
 
     @classmethod
     def upload_files(cls):
         cls.logger.info("Starting GCS Upload (source=%s, dest=%s)",
-                        cls.cfg.local.root_dir, f"gs://{cls.gcs_bucket_name}/{cls.cfg.gcs.prefix}")
+                        cls.local_dir, f"gs://{cls.gcs_bucket_name}/{cls.gcs_prefix}")
 
         client = Client()
         bucket = client.bucket(cls.gcs_bucket_name)
 
-        root_dir = Path(cls.cfg.local.root_dir)
         files = {
             path 
-            for pattern in cls.cfg.local.patterns
-            for path in root_dir.rglob(pattern)
+            for pattern in cls.cfg.ingestion.local.patterns
+            for path in cls.local_dir.rglob(pattern)
             if path.is_file()
         }
         nfiles = len(files)

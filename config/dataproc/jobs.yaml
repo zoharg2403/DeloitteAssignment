@@ -1,0 +1,13 @@
+jobs:
+  
+  users_per_city:
+    
+    batch_name: users-per-city
+    main_script: dataproc/jobs/users_per_city.py
+    source:
+      dataset: gold
+      table: users_address
+    target:
+      dataset: gold
+      table: users_per_city
+    write_mode: overwrite

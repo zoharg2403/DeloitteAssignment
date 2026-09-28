@@ -14,12 +14,17 @@ from airflow.providers.google.cloud.operators.dataproc import (
 from common.config import Config
 
 
-cfg = Config()
+cfg = Config().load(
+    "config/pipelines.yaml",
+    "config/dataproc/runtime.yaml",
+    "config/dataproc/jobs.yaml",
+    "config/dataproc/deploy.yaml",
+)
 env_cfg = cfg.env
 job_cfg = cfg.jobs.users_per_city
 pipeline_cfg = cfg.pipelines
 deploy_cfg = cfg.dataproc_deploy
-release_uri = f"{env_cfg.scripts_bucket}/{os.getenv('RELEASE_VERSION', 'latest')}"
+release_uri = f"{env_cfg.buckets.dataproc_scripts}/{os.getenv('RELEASE_VERSION', 'latest')}"
 
 default_args = {
     "owner": pipeline_cfg.dag_args.owner,

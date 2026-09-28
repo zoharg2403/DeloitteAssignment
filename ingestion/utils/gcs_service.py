@@ -25,7 +25,7 @@ class GCSService:
         src_name_prefix = src_name.split("_")[0]
         dest_name = f"{dest_blob}/{src_name_prefix}/{src_name}"
         bucket.copy_blob(src_blob, bucket, dest_name)
-        src_blob.delete()
+        # src_blob.delete()  # TODO
     
     def archive_processed(self, blob: storage.Blob) -> None:
         self._move_blob(src_blob = blob, dest_blob = self.processed_blob)
