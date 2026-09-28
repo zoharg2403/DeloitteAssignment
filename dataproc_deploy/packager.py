@@ -111,6 +111,6 @@ class Packager:
         # archive
         for p in self.assets.archive:
             source = self.zip_as_archive(p)
-            target = self.gcs_path_join(source)
+            target = self.gcs_path_join(source.relative_to(self.local_dir))
             self.upload_file(source, target)
 

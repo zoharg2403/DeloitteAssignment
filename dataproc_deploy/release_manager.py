@@ -73,7 +73,7 @@ class ReleaseManager:
             for line in res.stdout.splitlines()
             ]
         if not versions:
-            raise RuntimeError(f"No releases found with prefix '{self.prefix}' in {self.bucket_uri}")
+            raise RuntimeError(f"No releases found in {self.bucket_uri}")
 
         self.release_version_ = max(versions, key=lambda v: v.split("-")[1])
 
