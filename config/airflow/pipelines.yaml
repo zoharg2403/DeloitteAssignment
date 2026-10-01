@@ -1,0 +1,21 @@
+pipelines:
+
+  users_per_city:
+    
+    description: "Pipeline to calculate the number of users per city."
+    schedule_interval: "0 0 * * *"  # Daily at midnight
+    
+    tasks:
+      - task_id: "create_compilation_result"
+        operator: "DataformCreateCompilationResultOperator"
+        params:
+          project_id: "your-gcp-project-id"
+          location: "us-central1"
+          repository_id: "your-dataform-repo-id"
+      - task_id: "create_workflow_invocation"
+        operator: "DataformCreateWorkflowInvocationOperator"
+        params:
+          project_id: "your-gcp-project-id"
+          location: "us-central1"
+          repository_id: "your-dataform-repo-id"
+          compilation_result_id: "{{ task_instance.xcom_pull(task_ids='create_compilation_result', key='compilation_result_id') }}"
