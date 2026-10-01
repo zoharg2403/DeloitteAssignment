@@ -11,7 +11,7 @@ from airflow.providers.google.cloud.operators.dataproc import (
 )
 
 from common.config import Config
-from airflow.dag_config import ConfigDag
+from airflow.config_models import ConfigDag
 
 
 class PipelineRunner:
