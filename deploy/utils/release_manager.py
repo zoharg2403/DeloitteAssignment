@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 from common.config import _Root
-from dataproc_deploy.packager import Packager
+from deploy.utils.packager import Packager
 
 
 class ReleaseManager:

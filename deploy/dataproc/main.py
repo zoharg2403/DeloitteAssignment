@@ -5,7 +5,7 @@ from pathlib import Path
 from google.cloud import dataproc_v1
 
 from common.config import Config
-from dataproc_deploy.release_manager import ReleaseManager
+from deploy.utils.release_manager import ReleaseManager
 
 
 class JobSubmitter:
