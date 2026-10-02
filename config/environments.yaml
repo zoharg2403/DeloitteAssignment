@@ -3,15 +3,16 @@ environments:
   dev:
     
     project_id: dataengproj-500110
-    region: us-central1
     
     buckets:
       data_storage: gs://deloitte-assignment-data
       dataproc_scripts: gs://deloitte_assignment_dataproc_dev
       dataproc_temp: gs://deloitte_assignment_dataproc_temp
     
-      dataform:
+    dataform:
       repository_id: DeloitteAssignment
-      location: us-central1
+      region: us-central1
       git_commitish: main
-      
+    
+    dataproc:
+      region: us-central1
