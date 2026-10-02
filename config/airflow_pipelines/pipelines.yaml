@@ -1,0 +1,36 @@
+pipelines:
+
+  users_per_city:
+
+    dag:
+      dag_id:          "users-per-city"
+      schedule:        "@monthly"
+      start_date:      "01-01-2026"
+      catchup:         false
+      max_active_runs: 1
+
+    tasks:
+      - task_id: compile_dataform
+        operator: DataformCreateCompilationResultOperator
+
+      - task_id: silver_users
+        operator: DataformCreateWorkflowInvocationOperator
+        depends_on: [compile_dataform]
+        params:
+          workflow_invocation:
+            invocation_config:
+              included_targets:
+                - schema: silver
+                  name: users
+              transitive_dependencies_included: true
+
+      - task_id: silver_address
+        operator: DataformCreateWorkflowInvocationOperator
+        depends_on: [compile_dataform]
+        params:
+          workflow_invocation:
+            invocation_config:
+              included_targets:
+                - schema: silver
+                  name: address
+              transitive_dependencies_included: true

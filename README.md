@@ -20,7 +20,9 @@ config/                   Environment and owner-scoped application settings
    logging.yaml            Logging settings
    ingestion/              Upload and ingestion settings
    dataproc/               Runtime, jobs, and deployment settings
-   pipelines.yaml          Airflow DAG and Dataform repository settings
+   airflow/                Airflow pipeline and shared DAG settings
+      pipelines.yaml       DAG schedule and Dataform repository settings
+      dag.yaml             Shared DAG default arguments
 dataproc_deploy/           Release and Dataproc submission code
 ```
 
@@ -109,7 +111,8 @@ Configuration ownership is split by responsibility:
 - `config/dataproc/jobs.yaml`: Dataproc job inputs, outputs, and write mode
 - `config/dataproc/runtime.yaml` and `config/dataproc/deploy.yaml`:
    Spark runtime and release/submission options
-- `config/pipelines.yaml`: DAG schedule and orchestration settings
+- `config/airflow/pipelines.yaml`: DAG schedule and Dataform repository settings
+- `config/airflow/dag.yaml`: shared Airflow DAG default arguments
 - `config/logging.yaml`: application logging
 - `dataform/workflow_settings.yaml`: Dataform-native project and dataset settings
 
