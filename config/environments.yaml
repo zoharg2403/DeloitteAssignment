@@ -5,13 +5,14 @@ environments:
     project_id: dataengproj-500110
     
     buckets:
-      data_storage: gs://deloitte-assignment-data
+      data_storage:     gs://deloitte-assignment-data
       dataproc_scripts: gs://deloitte_assignment_dataproc_dev
-      dataproc_temp: gs://deloitte_assignment_dataproc_temp
+      dataproc_temp:    gs://deloitte_assignment_dataproc_temp
+      airflow_scripts:  gs://us-central1-deloitte-assign-fdde6010-bucket
     
     dataform:
       repository_id: DeloitteAssignment
-      region: us-central1
+      region:        us-central1
       git_commitish: main
     
     dataproc:
