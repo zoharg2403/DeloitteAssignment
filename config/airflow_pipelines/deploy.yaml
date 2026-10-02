@@ -1,7 +1,7 @@
 airflow_deploy:
   
   assets:
-    - airflow_pipelines/
+    - dags/
     - config/airflow_pipelines/pipelines.yaml
   
   ignore_patterns:

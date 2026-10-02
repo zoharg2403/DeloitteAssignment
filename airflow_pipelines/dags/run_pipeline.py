@@ -4,7 +4,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime as dt
 
 from common.config import Config
-from dags.task_factory import TaskFactory
+from airflow_pipelines.dags.task_factory import TaskFactory
 
 
 @dataclass
