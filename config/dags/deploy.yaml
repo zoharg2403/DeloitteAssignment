@@ -1,0 +1,12 @@
+airflow_deploy:
+  
+  assets:
+    - airflow_pipelines/
+    - config/airflow_pipelines/pipelines.yaml
+  
+  ignore_patterns:
+    dirs:
+      - __pycache__
+    extensions:
+      - .pyc
+      - .zip

@@ -1,10 +1,10 @@
 
 from airflow import DAG
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, asdict
 from datetime import datetime as dt
 
 from common.config import Config
-from airflow_pipelines.task_factory import TaskFactory
+from dags.task_factory import TaskFactory
 
 
 @dataclass
@@ -29,7 +29,7 @@ class ConfigDag:
     def keys(self):
         return asdict(self).keys()
 
-
+    
 class PipelineRunner:
     def __init__(self):
         self.cfg = Config().load(
@@ -37,21 +37,20 @@ class PipelineRunner:
             # "config/dataproc/jobs.yaml",
             # "config/dataproc/deploy.yaml",
         )
+        self.task_factory = TaskFactory(
+            project_id             = self.cfg.env.project_id,
+            dataform_repository_id = self.cfg.env.dataform.repository_id,
+            dataform_region        = self.cfg.env.dataform.region,
+            dataform_git_commitish = self.cfg.env.dataform.git_commitish,
+        )
 
     def run(self, pipeline_name: str):
         cfg_pipeline = getattr(self.cfg.pipelines, pipeline_name)
         cfg_dag = ConfigDag(**cfg_pipeline.dag)
-        task_factory = TaskFactory(
-            project_id    = self.cfg.env.project_id,
-            repository_id = self.cfg.env.dataform.repository_id,
-            location      = self.cfg.env.dataform.location,
-            git_commitish = self.cfg.env.dataform.git_commitish,
-        )
 
         with DAG(**cfg_dag) as dag:
-            tasks = task_factory.create_tasks(cfg_pipeline.tasks)
+            self.task_factory.create_tasks(cfg_pipeline.tasks)
 
-        return dag
 
 
 if __name__ == "__main__":
