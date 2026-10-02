@@ -48,7 +48,6 @@ class JobContext:
             temp_bucket   = cfg.env.buckets.dataproc_temp,
             spark_session = spark
         )
-        cls._initialized = True
         return cls(
             job_name      = job_name,
             cfg           = cfg, 
