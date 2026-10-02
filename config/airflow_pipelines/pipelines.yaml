@@ -4,7 +4,7 @@ pipelines:
 
     dag:
       dag_id:          "users-per-city"
-      schedule:        "@monthly"
+      schedule:        None  # "@monthly"
       start_date:      "01-01-2026"
       catchup:         false
       max_active_runs: 1
