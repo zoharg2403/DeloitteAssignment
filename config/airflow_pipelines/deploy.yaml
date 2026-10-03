@@ -1,8 +1,15 @@
 airflow_deploy:
   
   assets:
-    - dags/
-    - config/airflow_pipelines/pipelines.yaml
+    dags_files:
+    # upload as files in "dags" folder (wo relative path)
+      - airflow_pipelines/dags/
+    dags_subdirs:
+    # upload as subdirectories in "dags" folder (w relative path)
+      - common/
+      - airflow_pipelines/utils/
+      - config/airflow_pipelines/pipelines.yaml
+      - config/environments.yaml
   
   ignore_patterns:
     dirs:

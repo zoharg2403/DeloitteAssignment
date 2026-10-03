@@ -26,7 +26,7 @@ class DagSubmitter:
         return self.cfg.env.buckets.airflow_scripts
 
     def gcs_path_join(self, path: Path | str):
-        return f"{self.bucket_uri}/{Path(path).as_posix().strip('/')}"
+        return f"{self.bucket_uri}/dags/{Path(path).as_posix().strip('/')}"
 
 
     def is_ignored(self, path: Path | str):
@@ -63,7 +63,21 @@ class DagSubmitter:
             raise RuntimeError(f"GCS upload failed for {local} -> {remote}.\n{details}")
 
     def upload_assets(self):
-        for p in self.cfg.airflow_deploy.assets:
+        assets = self.cfg.airflow_deploy.assets
+
+        for p in assets.dags_files:
+            source = Path(p)
+            if source.is_file():
+                target = self.gcs_path_join(source.name)
+                self.upload_file(source, target)
+
+            elif source.is_dir():
+                for src in source.rglob('*'):
+                    if src.is_file() and not self.is_ignored(src):
+                        target = self.gcs_path_join(src.name)
+                        self.upload_file(src, target)
+
+        for p in assets.dags_subdirs:
             source = Path(p)
             if source.is_file():
                 target = self.gcs_path_join(source)
@@ -77,6 +91,7 @@ class DagSubmitter:
 
     def run(self):
         self.upload_assets()
+
 
 if __name__ == "__main__":
     submitter = DagSubmitter()
