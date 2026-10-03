@@ -23,14 +23,3 @@ dataproc_deploy:
       - .pyc
       - .zip
   
-  batch_kwargs:
-    pyspark:
-      python_file_uris:
-        - dataproc.zip
-        - common.zip
-      file_uris:
-        - .env
-      archive_uris:
-        - config.zip#config
-    runtime_config_properties:
-      spark.sql.adaptive.enabled: true

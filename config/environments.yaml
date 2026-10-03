@@ -5,7 +5,6 @@ environments:
     project_id: dataengproj-500110
     region:     us-central1
 
-    
     buckets:
       data_storage:     gs://deloitte-assignment-data
       dataproc_scripts: gs://deloitte_assignment_dataproc_dev
@@ -18,6 +17,9 @@ environments:
       service_account: 240983826854-compute@developer.gserviceaccount.com
     
     dataproc:
-      app_name:      spark
-      views_enabled: true
-      materialization_dataset: spark_materialization
+      release_version: latest  # release-20260928_154309-1450ab7
+      spark_session:
+        app_name:      spark
+        views_enabled: true
+        materialization_dataset: spark_materialization
+

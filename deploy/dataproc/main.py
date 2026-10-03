@@ -52,13 +52,13 @@ class JobSubmitter:
                 "main_python_file_uri": main_script_uri,
                 **{
                     k: [self.gcs_path_join(vi) for vi in v] 
-                    for k, v in self.cfg.dataproc_deploy.batch_kwargs.pyspark.items() 
+                    for k, v in cfg_job.batch_kwargs.pyspark.items() 
                    }
                 },
                 "runtime_config": {
                     "properties": {
                         k: str(v).lower() 
-                        for k, v in self.cfg.dataproc_deploy.batch_kwargs.runtime_config_properties.items()
+                        for k, v in cfg_job.batch_kwargs.runtime_config_properties.items()
                         }
                     }
                 }

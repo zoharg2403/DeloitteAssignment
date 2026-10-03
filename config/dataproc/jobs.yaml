@@ -1,7 +1,6 @@
 jobs:
   
   users_per_city:
-    
     batch_name: users-per-city
     main_script: dataproc/jobs/users_per_city.py
     source:
@@ -11,3 +10,14 @@ jobs:
       dataset: gold
       table: users_per_city
     write_mode: overwrite
+    batch_kwargs:
+      pyspark:
+        python_file_uris:
+          - dataproc.zip
+          - common.zip
+        file_uris:
+          - .env
+        archive_uris:
+          - config.zip#config
+      runtime_config_properties:
+        spark.sql.adaptive.enabled: true
