@@ -9,6 +9,7 @@ airflow_deploy:
     # upload as subdirectories in "dags" folder (w relative path)
       - common/
       - airflow_pipelines/utils/
+      - airflow_pipelines/__init__.py
       - config/airflow_pipelines/pipelines.yaml
       - config/environments.yaml
       - config/common.yaml
