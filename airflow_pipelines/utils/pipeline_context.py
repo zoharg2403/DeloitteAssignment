@@ -57,4 +57,7 @@ class PipelineContext:
         self.logger.info("Stopping Spark session")
         self.spark_session.stop()
 
+# if __name__ == "__main__":
+#     ctx = PipelineContext.create("users_per_city")
+#     print({**ctx.cfg_dag})
 

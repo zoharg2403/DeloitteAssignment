@@ -1,11 +1,12 @@
 
-from dataclasses import dataclass, asdict
+from collections.abc import Iterator, Mapping
+from dataclasses import dataclass, fields
 from datetime import datetime as dt, timedelta
 from typing import Any
 
 
 @dataclass
-class ConfigDag:
+class ConfigDag(Mapping[str, Any]):
     dag_id:          str
     schedule:        str
     start_date:      str | dt  # str will be converted to datetime object
@@ -29,16 +30,23 @@ class ConfigDag:
             try:
                 self.default_args["retry_delay"] = timedelta(seconds=int(self.default_args["retry_delay"]))
             except (ValueError, TypeError) as e:
-                raise ValueError(f"Invalid retry_delay: {self.default_args["retry_delay"]}") from e
+                raise ValueError(f"Invalid retry_delay: {self.default_args['retry_delay']}") from e
 
-    def __getitem__(self, key):
-        return getattr(self, key)
-    
-    def keys(self):
-        return asdict(self).keys()
+    def __getitem__(self, key: str) -> Any:
+        try:
+            return getattr(self, key)
+        except AttributeError:
+            raise KeyError(key) from None
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(field.name for field in fields(self))
+
+    def __len__(self) -> int:
+        return len(fields(self))
 
 
 # if __name__ == "__main__":
 #     from common.config import Config
 #     tst = ConfigDag(**Config().load("config/airflow_pipelines/pipelines.yaml").pipelines.users_per_city.dag)
 #     print(tst.default_args)
+#     print({**tst})
