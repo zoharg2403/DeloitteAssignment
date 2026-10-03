@@ -52,11 +52,12 @@ class TaskFactory:
 
         for task_id, cfg_task in cfg_tasks.items():
             for dependency in cfg_task.depends_on or []:
-                if dependency not in tasks:
-                    raise ValueError(f"Task '{task_id}' depends on unknown task '{dependency}'")
-                tasks[dependency] >> tasks[task_id]
+                try:
+                    created_tasks[dependency] >> created_tasks[task_id]
+                except KeyError as e:
+                    raise KeyError(f"Task '{task_id}' is unknown or depends on unknown task '{dependency}'")
 
-        return tasks
+        return created_tasks.values()
 
 
 if __name__ == "__main__":
