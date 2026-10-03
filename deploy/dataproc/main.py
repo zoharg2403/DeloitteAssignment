@@ -14,7 +14,7 @@ class JobSubmitter:
         self.cfg = Config().load(
             "config/dataproc/runtime.yaml",
             "config/dataproc/jobs.yaml",
-            "config/dataproc/deploy.yaml",
+            "config/deploy/dataproc.yaml",
         )
 
         try:

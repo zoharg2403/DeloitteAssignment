@@ -9,7 +9,7 @@ from common.config import Config
 class DagSubmitter:
 
     def __init__(self):
-        self.cfg = Config().load("config/airflow_pipelines/deploy.yaml")
+        self.cfg = Config().load("config/deploy/airflow_pipelines.yaml")
         
         self.gcloud_ = None
 

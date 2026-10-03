@@ -83,7 +83,7 @@ The Dataproc job expects the Dataform gold table
 
 ## Create a release and submit Dataproc
 
-`config/dataproc/deploy.yaml` controls release creation and the Dataproc batch
+`config/deploy/dataproc.yaml` controls release creation and the Dataproc batch
 options. With `dataproc_deploy.release.create_new: true`, running the submitter uploads the
 configured source files and packages before submitting the batch:
 
@@ -99,7 +99,7 @@ and `config.zip` as Python file URIs; `.env` is passed as a file URI.
 To submit an existing release, set
 `dataproc_deploy.release.create_new: false` and replace
 `dataproc_deploy.release.requested_version: latest` in
-`config/dataproc/deploy.yaml` with the desired release version.
+`config/deploy/dataproc.yaml` with the desired release version.
 
 ## Configuration
 
@@ -109,7 +109,7 @@ Configuration ownership is split by responsibility:
 - `config/ingestion/upload.yaml` and `config/ingestion/gcs_ingestion.yaml`:
    ingestion behavior
 - `config/dataproc/jobs.yaml`: Dataproc job inputs, outputs, and write mode
-- `config/dataproc/runtime.yaml` and `config/dataproc/deploy.yaml`:
+- `config/dataproc/runtime.yaml` and `config/deploy/dataproc.yaml`:
    Spark runtime and release/submission options
 - `config/airflow/pipelines.yaml`: DAG schedule and Dataform repository settings
 - `config/airflow/dag.yaml`: shared Airflow DAG default arguments
