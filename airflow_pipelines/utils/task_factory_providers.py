@@ -1,6 +1,6 @@
 
 from copy import deepcopy
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, field
 
 from airflow.providers.google.cloud.operators.dataform import (
     DataformCreateCompilationResultOperator,
@@ -15,17 +15,11 @@ class ConfigTask:
     task_id:    str
     operator:   str
     is_enabled: bool
-    params:     InitVar[dict | None] = None
-    depends_on: list[str] | None = None
+    params:     dict = field(default_factory=dict)
+    depends_on: list = field(default_factory=list)
 
-    _params: dict = field(default_factory=dict, repr=False)
-
-    def __post_init__(self, params):
-        self._params = params
-
-    @property
-    def params(self) -> dict:
-        return deepcopy(self._params)
+    def copy_params(self):
+        return deepcopy(self.params)
 
 
 def operator(name):
@@ -45,7 +39,7 @@ class DataformTasks:
 
     @operator("DataformCreateCompilationResultOperator")
     def create_compilation_result(self, cfg_task: ConfigTask):
-        params = cfg_task.params
+        params = cfg_task.copy_params()
         compilation_result = params.pop("compilation_result", {})
         compilation_result.setdefault("git_commitish", self.git_commitish)
         return DataformCreateCompilationResultOperator(
@@ -59,13 +53,13 @@ class DataformTasks:
 
     @operator("DataformCreateWorkflowInvocationOperator")
     def create_workflow_invocation(self, cfg_task: ConfigTask):
-        params = cfg_task.params
+        params = cfg_task.copy_params()
+        
         workflow_invocation = params.pop("workflow_invocation", {})
         workflow_invocation.setdefault("compilation_result", "{{ ti.xcom_pull(task_ids='compile_dataform')['name'] }}")
-        invocation_config = dict(workflow_invocation.get("invocation_config", {}))
-        for target in invocation_config.get("included_targets", []):
+        
+        for target in workflow_invocation.get("invocation_config", {}).get("included_targets", []):
             target.setdefault("database", self.project_id)
-        workflow_invocation["invocation_config"] = invocation_config
         return DataformCreateWorkflowInvocationOperator(
             task_id             = cfg_task.task_id,
             project_id          = self.project_id,
