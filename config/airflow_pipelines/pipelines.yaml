@@ -19,7 +19,7 @@ pipelines:
         is_enabled: true
         operator:   DataformCreateCompilationResultOperator
 
-      - task_id:    silver_users
+      - task_id:    dataform_transformations
         is_enabled: true
         operator:   DataformCreateWorkflowInvocationOperator
         depends_on: [compile_dataform]
@@ -27,18 +27,7 @@ pipelines:
           workflow_invocation:
             invocation_config:
               included_targets:
-                - schema: silver
-                  name:   users
+                - schema: gold
+                  name:   users_address
               transitive_dependencies_included: true
-
-      - task_id:    silver_address
-        is_enabled: true
-        operator:   DataformCreateWorkflowInvocationOperator
-        depends_on: [compile_dataform]
-        params:
-          workflow_invocation:
-            invocation_config:
-              included_targets:
-                - schema: silver
-                  name:   address
-              transitive_dependencies_included: true
+      
