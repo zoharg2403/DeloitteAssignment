@@ -8,6 +8,8 @@ pipelines:
       start_date:      "01-01-2026"
       catchup:         false
       max_active_runs: 1
+      retries:         1
+      retry_delay:     120  # sec
 
     tasks:
       - task_id: compile_dataform
