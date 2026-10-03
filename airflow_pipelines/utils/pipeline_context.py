@@ -19,7 +19,7 @@ class PipelineContext:
     pipeline_name: str
     cfg:           Config
     logger:        Logger
-    task_factory: TaskFactory
+    task_factory: TaskFactory | None = None
 
 
     @property
