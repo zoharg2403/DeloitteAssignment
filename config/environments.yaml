@@ -17,7 +17,7 @@ environments:
       service_account: 240983826854-compute@developer.gserviceaccount.com
     
     dataproc:
-      release_version: latest  # release-20260928_154309-1450ab7
+      release_version: latest  # release-20261003_154934-0d10a8b
       spark_session:
         app_name:      spark
         views_enabled: true

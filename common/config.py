@@ -30,10 +30,9 @@ class _Root(dict[str, Any]):
 class Config:
     """Load YAML files."""
     
-    default_base_dir = Path(__file__).parent.parent
-    default_dotenv   = default_base_dir / ".env"
+    default_dotenv   = ".env"
     default_env      = "dev"
-    default_env_cfg  = default_base_dir / "config" / "environments.yaml"
+    default_env_cfg  = "config/environments.yaml"
     _root: _Root     = None
 
     def __init__(self):
@@ -74,7 +73,16 @@ class Config:
     @property
     def env(self):
         if "environments" not in self._root:
-            self.load(self.default_env_cfg)
+            if Path(self.default_env_cfg).is_file():
+                self.load(self.default_env_cfg)
+            else:
+                base_dir = Path(__file__).parent.parent
+                filepath = base_dir / Path(self.default_env_cfg)
+                if filepath.is_file():
+                    self.load(filepath)
+                else:
+                    raise FileNotFoundError(f"Couldn't find env file in '{self.default_env_cfg}' or '{filepath}'")
+
         return getattr(self._root.environments, self.environment)
 
 
