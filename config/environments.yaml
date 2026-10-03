@@ -11,10 +11,13 @@ environments:
       airflow_scripts:  gs://us-central1-deloitte-assign-fdde6010-bucket
     
     dataform:
-      repository_id: DeloitteAssignment
-      region:        us-central1
-      git_commitish: main
+      repository_id:   DeloitteAssignment
+      region:          us-central1
+      git_commitish:   main
       service_account: 240983826854-compute@developer.gserviceaccount.com
     
     dataproc:
-      region: us-central1
+      region:        us-central1
+      app_name:      spark
+      views_enabled: true
+      materialization_dataset: spark_materialization

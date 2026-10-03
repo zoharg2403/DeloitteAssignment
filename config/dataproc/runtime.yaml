@@ -1,6 +1,0 @@
-dataproc:
-  
-  spark_session:
-    app_name: spark
-    views_enabled: true
-    materialization_dataset: spark_materialization
