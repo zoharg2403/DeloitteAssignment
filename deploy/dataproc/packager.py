@@ -42,7 +42,7 @@ class Packager:
     def is_ignored(self, path: Path | str):
         path = Path(path).resolve()
 
-        for dir_ in self.ignore_patterns.dirs:
+        for dir_ in self.ignore_patterns.dirs or []:
             try:
                 # If path is a subpath of dir_, this will succeed
                 path.relative_to(dir_)
@@ -52,7 +52,7 @@ class Packager:
 
         if path.is_file():
             ext = path.suffix.lower()
-            if ext in self.ignore_patterns.extensions:
+            if ext in self.ignore_patterns.extensions or []:
                 return True
 
         return False
@@ -90,7 +90,7 @@ class Packager:
     def create(self):
         
         # files
-        for p in self.assets.files:
+        for p in self.assets.files or []:
             source = Path(p)
             if source.is_file():
                 target = self.gcs_path_join(source)
@@ -103,13 +103,13 @@ class Packager:
                         self.upload_file(src, target)
 
         # python_packages
-        for p in self.assets.python_packages:
+        for p in self.assets.python_packages or []:
             source = self.zip_as_python_package(p)
             target = self.gcs_path_join(source.relative_to(self.local_dir))
             self.upload_file(source, target)
 
         # archive
-        for p in self.assets.archive:
+        for p in self.assets.archive or []:
             source = self.zip_as_archive(p)
             target = self.gcs_path_join(source.relative_to(self.local_dir))
             self.upload_file(source, target)

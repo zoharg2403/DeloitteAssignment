@@ -34,7 +34,7 @@ class DagSubmitter:
         path = Path(path).resolve()
 
 
-        for dir_ in ignore_patterns.dirs:
+        for dir_ in ignore_patterns.dirs or []:
             try:
                 # If path is a subpath of dir_, this will succeed
                 path.relative_to(dir_)
@@ -44,7 +44,7 @@ class DagSubmitter:
 
         if path.is_file():
             ext = path.suffix.lower()
-            if ext in ignore_patterns.extensions:
+            if ext in ignore_patterns.extensions or []:
                 return True
 
         return False
@@ -65,7 +65,7 @@ class DagSubmitter:
     def upload_assets(self):
         assets = self.cfg.airflow_deploy.assets
 
-        for p in assets.dags_files:
+        for p in assets.dags_files or []:
             source = Path(p)
             if source.is_file():
                 target = self.gcs_path_join(source.name)
@@ -77,7 +77,7 @@ class DagSubmitter:
                         target = self.gcs_path_join(src.name)
                         self.upload_file(src, target)
 
-        for p in assets.dags_subdirs:
+        for p in assets.dags_subdirs or []:
             source = Path(p)
             if source.is_file():
                 target = self.gcs_path_join(source)
