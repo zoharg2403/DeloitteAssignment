@@ -9,8 +9,10 @@ pipelines:
       catchup:         false
       max_active_runs: 1
       default_args:
-        retries:       1
-        retry_delay:   120  # sec
+        retries:                   0
+        retry_delay:               120   # 2 minutes[sec]
+        # retry_exponential_backoff: true  # 
+        # max_retry_delay:           900   # 15 minutes [sec]
 
     tasks:
       - task_id:    compile_dataform
