@@ -31,11 +31,12 @@ def operator(name):
 
 class DataformTasks:
 
-    def __init__(self, project_id: str, repository_id: str, region: str, git_commitish: str):
+    def __init__(self, project_id: str, repository_id: str, region: str, git_commitish: str, service_account: str):
         self.project_id    = project_id
         self.repository_id = repository_id
         self.region        = region
         self.git_commitish = git_commitish
+        self.service_account = service_account
 
     @operator("DataformCreateCompilationResultOperator")
     def create_compilation_result(self, cfg_task: ConfigTask):
@@ -57,6 +58,7 @@ class DataformTasks:
         
         workflow_invocation = params.pop("workflow_invocation", {})
         workflow_invocation.setdefault("compilation_result", "{{ ti.xcom_pull(task_ids='compile_dataform')['name'] }}")
+        workflow_invocation.setdefault("invocation_config", {}).setdefault("service_account", self.service_account)
         
         for target in workflow_invocation.get("invocation_config", {}).get("included_targets", []):
             target.setdefault("database", self.project_id)
