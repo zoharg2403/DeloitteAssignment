@@ -34,15 +34,18 @@ class PipelineContext:
         return self.task_factory.create_tasks(self.cfg_pipeline.tasks)
 
     def _init_task_factory(self):
-        return TaskFactory(cfg_env = self.cfg.env)
+        return TaskFactory(cfg = self.cfg)
 
     @classmethod
     def create(cls, pipeline_name: str) -> PipelineContext:
         base_dir = Path(__file__).parent.parent.parent
         inst = cls(
             pipeline_name = pipeline_name,
-            cfg           = Config().load(base_dir / "config" / "airflow_pipelines" / "pipelines.yaml"), 
-            logger        = Logger(base_dir / "config" / "common.yaml"),
+            logger = Logger(base_dir / "config" / "common.yaml"),
+            cfg = Config().load(
+                base_dir / "config" / "airflow_pipelines" / "pipelines.yaml", 
+                base_dir / "config" / "dataproc" / "jobs.yaml", 
+                ), 
             )
         inst.task_factory = inst._init_task_factory()
         return inst

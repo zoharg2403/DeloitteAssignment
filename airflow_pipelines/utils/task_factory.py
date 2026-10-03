@@ -5,28 +5,29 @@ from airflow_pipelines.utils.task_factory_providers import (
     DataprocTasks,
     )
 
-from common.config import _Root
+from common.config import Config
 
 class TaskFactory:
     
-    def __init__(self, cfg_env: _Root):
-        self.cfg_env   = cfg_env
+    def __init__(self, cfg: Config):
+        self.cfg   = cfg
         self._creators = {}
         self._init_creators()
 
     def _init_creators(self):
         providers = [
             DataformTasks(
-                project_id      = self.cfg_env.project_id,
-                region          = self.cfg_env.region,
-                repository_id   = self.cfg_env.dataform.repository_id,
-                git_commitish   = self.cfg_env.dataform.git_commitish,
-                service_account = self.cfg_env.dataform.service_account,
+                project_id      = self.cfg.env.project_id,
+                region          = self.cfg.env.region,
+                repository_id   = self.cfg.env.dataform.repository_id,
+                git_commitish   = self.cfg.env.dataform.git_commitish,
+                service_account = self.cfg.env.dataform.service_account,
             ),
             DataprocTasks(
-                project_id = self.cfg_env.project_id,
-                bucket_uri = self.cfg.env.buckets.dataproc_scripts,
-                release_version = self.cfg.env.dataproc.release_version
+                project_id      = self.cfg.env.project_id,
+                bucket_uri      = self.cfg.env.buckets.dataproc_scripts,
+                release_version = self.cfg.env.dataproc.release_version,
+                cfg_jobs        = self.cfg.jobs
             ),
         ]
         for prvdr in providers:
@@ -68,5 +69,5 @@ if __name__ == "__main__":
     cfg = Config().load("config/airflow_pipelines/pipelines.yaml")
     pipeline_name = "users_per_city"
     cfg_pipeline = getattr(cfg.pipelines, pipeline_name)
-    task_factory = TaskFactory(cfg_env = cfg.env)
+    task_factory = TaskFactory(cfg = cfg)
     task_factory.create_tasks(cfg_pipeline.tasks)

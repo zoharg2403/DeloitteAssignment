@@ -36,18 +36,4 @@ pipelines:
         operator:   DataprocCreateBatchOperator
         depends_on: [dataform_transformations]
         params:
-          batch_id: "users-per-city-{{ ts_nodash | lower }}"
-          batch:
-            pyspark_batch:
-              main_python_file_uri: gs://deloitte_assignment_dataproc_dev/release-20260928_154309-1450ab7/dataproc/jobs/users_per_city.py
-              python_file_uris:
-                - gs://deloitte_assignment_dataproc_dev/release-20260928_154309-1450ab7/dataproc.zip
-                - gs://deloitte_assignment_dataproc_dev/release-20260928_154309-1450ab7/common.zip
-              file_uris:
-                - gs://deloitte_assignment_dataproc_dev/release-20260928_154309-1450ab7/.env
-              archive_uris:
-                - gs://deloitte_assignment_dataproc_dev/release-20260928_154309-1450ab7/config.zip#config
-            runtime_config:
-              properties:
-                spark.sql.adaptive.enabled: "true"
-      
+          job_name: users_per_city

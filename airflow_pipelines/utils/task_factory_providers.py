@@ -1,6 +1,8 @@
 
+import uuid
 import shutil
 import subprocess
+from pathlib import Path
 from copy import deepcopy
 from dataclasses import dataclass, field
 
@@ -11,6 +13,8 @@ from airflow.providers.google.cloud.operators.dataform import (
 from airflow.providers.google.cloud.operators.dataproc import (
     DataprocCreateBatchOperator,
 )
+
+from common.config import _Root
 
 @dataclass
 class ConfigTask:
@@ -76,7 +80,7 @@ class DataformTasks:
 
 class DataprocTasks:
 
-    def __init__(self, project_id: str, bucket_uri: str, release_version: str):
+    def __init__(self, project_id: str, bucket_uri: str, release_version: str, cfg_jobs: _Root):
         self.project_id = project_id
         self.bucket_uri = bucket_uri.strip('/')
 
@@ -87,6 +91,8 @@ class DataprocTasks:
             self.release_version = release_version.strip('/')
             if not self._is_release_version_exists(self.release_uri):
                 raise RuntimeError(f"Release varsion '{self.release_version}' was not found in {self.bucket_uri}")
+
+        self.cfg_jobs = cfg_jobs
 
         self.gcloud_      = None
         self.release_uri_ = None
@@ -105,6 +111,9 @@ class DataprocTasks:
             self.release_uri_ = f"{self.bucket_uri}/{self.release_version.strip('/')}"
         return self.release_uri_
 
+    def gcs_path_join(self, path: Path | str) -> str:
+        return f"{self.release_uri}/{Path(path).as_posix().strip('/')}"
+    
     def _get_latest_release_version(self) -> str:
         """Get the latest release in the bucket"""
         res = subprocess.run(
@@ -136,8 +145,25 @@ class DataprocTasks:
     @operator("DataprocCreateBatchOperator")
     def create_batch(self, cfg_task: ConfigTask):
         params = cfg_task.copy_params()
-        batch = params.pop("batch", {})
-        batch_id = params.pop("batch_id", cfg_task.task_id)
+        job_name = params.pop("job_name")
+        cfg_job = self.cfg_jobs[job_name]
+        batch_id = f"{cfg_job.batch_name}-{uuid.uuid4().hex[:8]}"
+        
+        batch = {
+            "pyspark_batch": {
+                "main_python_file_uri": self.gcs_path_join(cfg_job.main_script),
+                **{
+                    k: [self.gcs_path_join(vi) for vi in v] 
+                    for k, v in cfg_job.batch_kwargs.pyspark.items() 
+                   }
+                },
+                "runtime_config": {
+                    "properties": {
+                        k: str(v).lower() 
+                        for k, v in cfg_job.batch_kwargs.runtime_config_properties.items()
+                        }
+                    }
+                }
         return DataprocCreateBatchOperator(
             task_id    = cfg_task.task_id,
             project_id = self.project_id,

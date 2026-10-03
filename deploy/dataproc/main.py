@@ -12,7 +12,6 @@ class JobSubmitter:
 
     def __init__(self):
         self.cfg = Config().load(
-            "config/dataproc/runtime.yaml",
             "config/dataproc/jobs.yaml",
             "config/deploy/dataproc.yaml",
         )
