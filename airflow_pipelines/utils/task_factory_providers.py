@@ -85,6 +85,7 @@ class DataprocTasks:
         self.region     = region
         self.bucket_uri = bucket_uri.strip('/')
         self.cfg_jobs   = cfg_jobs
+        self.gcloud_    = None
 
         # resolve release version and uri
         if release_version == "latest":
@@ -95,9 +96,6 @@ class DataprocTasks:
             self.release_uri     = f"{self.bucket_uri}/{self.release_version.strip('/')}"
             if not self._is_release_version_exists(self.release_uri):
                 raise RuntimeError(f"Release varsion '{self.release_version}' was not found in {self.bucket_uri}")
-
-
-        self.gcloud_      = None
 
     @property
     def gcloud(self):
