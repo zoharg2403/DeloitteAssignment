@@ -31,10 +31,10 @@ def operator(name):
 
 class DataformTasks:
 
-    def __init__(self, project_id: str, repository_id: str, region: str, git_commitish: str, service_account: str):
+    def __init__(self, project_id: str, region: str, repository_id: str, git_commitish: str, service_account: str):
         self.project_id    = project_id
-        self.repository_id = repository_id
         self.region        = region
+        self.repository_id = repository_id
         self.git_commitish = git_commitish
         self.service_account = service_account
 

@@ -17,9 +17,11 @@ class TaskFactory:
     def _init_creators(self):
         providers = [
             DataformTasks(
-                project_id = self.cfg_env.project_id,
-                region =     self.cfg_env.region
-                **self.cfg_env.dataform
+                project_id      = self.cfg_env.project_id,
+                region          = self.cfg_env.region,
+                repository_id   = self.cfg_env.dataform.repository_id,
+                git_commitish   = self.cfg_env.dataform.git_commitish,
+                service_account = self.cfg_env.dataform.service_account,
             ),
             DataprocTasks(
                 project_id = self.cfg_env.project_id,
