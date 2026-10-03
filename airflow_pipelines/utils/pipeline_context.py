@@ -38,7 +38,7 @@ class PipelineContext:
 
     @classmethod
     def create(cls, pipeline_name: str) -> PipelineContext:
-        base_dir     = Path(__file__).parent.parent.parent
+        base_dir = Path(__file__).parent.parent.parent
         inst = cls(
             pipeline_name = pipeline_name,
             cfg           = Config().load(base_dir / "config" / "airflow_pipelines" / "pipelines.yaml"), 

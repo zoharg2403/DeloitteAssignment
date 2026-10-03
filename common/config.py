@@ -32,11 +32,12 @@ class _Root(dict[str, Any]):
 
 class Config:
     """Load YAML files."""
-
-    default_dotenv  = ".env"
-    default_env     = "dev"
-    default_env_cfg = "config/environments.yaml"
-    _root: _Root   = None
+    
+    default_base_dir = Path(__file__).parent.parent
+    default_dotenv   = ".env"
+    default_env      = "dev"
+    default_env_cfg  = default_base_dir / "config" / "environments.yaml"
+    _root: _Root     = None
 
     def __init__(self):
         load_dotenv(self.default_dotenv, override=True)
@@ -92,7 +93,7 @@ class Config:
 
 if __name__ == "__main__":
     cfg = Config()
-    cfg.load("config/dataproc/deploy.yaml")
+    cfg.load("config/deploy/dataproc.yaml")
     # cfg.load("config/environments.yaml")
     cfg.env
 
