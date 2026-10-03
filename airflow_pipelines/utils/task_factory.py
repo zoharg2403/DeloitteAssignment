@@ -2,29 +2,28 @@
 from airflow_pipelines.utils.task_factory_providers import (
     ConfigTask,
     DataformTasks,
+    DataprocTasks,
     )
 
 from common.config import _Root
 
 class TaskFactory:
     
-    _creators = None
-
     def __init__(self, cfg_env: _Root):
         self.cfg_env   = cfg_env
+        self._creators = {}
         self._init_creators()
 
     def _init_creators(self):
-        self._creators = self._creators or {}
         providers = [
             DataformTasks(
                 project_id = self.cfg_env.project_id,
                 **self.cfg_env.dataform
             ),
-            # DataprocTasks(
-            #     project_id = self.project_id,
-            #     **self.cfg.env.dataproc
-            # ),
+            DataprocTasks(
+                project_id = self.cfg_env.project_id,
+                **self.cfg_env.dataproc
+            ),
             ]
         for prvdr in providers:
             for method_name in dir(prvdr):

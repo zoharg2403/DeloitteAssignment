@@ -72,17 +72,22 @@ class DataformTasks:
         )
 
 
-# class DataprocTasks:
+class DataprocTasks:
 
-#     def __init__(self, project_id: str, region: str):
-#         self.project_id = project_id
-#         self.region = region
+    def __init__(self, project_id: str, region: str):
+        self.project_id = project_id
+        self.region = region
 
-#     @operator("DataprocCreateBatchOperator")
-#     def create_batch(self, cfg_task: ConfigTask):
-#         return DataprocCreateBatchOperator(
-#             task_id=cfg_task.task_id,
-#             project_id=self.project_id,
-#             region=self.region,
-#             **cfg_task.params,
-#         )
+    @operator("DataprocCreateBatchOperator")
+    def create_batch(self, cfg_task: ConfigTask):
+        params = cfg_task.copy_params()
+        batch = params.pop("batch", {})
+        batch_id = params.pop("batch_id", cfg_task.task_id)
+        return DataprocCreateBatchOperator(
+            task_id    = cfg_task.task_id,
+            project_id = self.project_id,
+            region     = self.region,
+            batch_id   = batch_id,
+            batch      = batch,
+            **params,
+        )
