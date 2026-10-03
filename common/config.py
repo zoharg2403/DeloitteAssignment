@@ -34,7 +34,7 @@ class Config:
     """Load YAML files."""
     
     default_base_dir = Path(__file__).parent.parent
-    default_dotenv   = ".env"
+    default_dotenv   = default_base_dir / ".env"
     default_env      = "dev"
     default_env_cfg  = default_base_dir / "config" / "environments.yaml"
     _root: _Root     = None

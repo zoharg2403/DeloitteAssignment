@@ -4,6 +4,7 @@ airflow_deploy:
     dags_files:
     # upload as files in "dags" folder (wo relative path)
       - airflow_pipelines/dags/
+      - .env
     dags_subdirs:
     # upload as subdirectories in "dags" folder (w relative path)
       - common/
