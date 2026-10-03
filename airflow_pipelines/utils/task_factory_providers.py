@@ -13,8 +13,8 @@ from airflow.providers.google.cloud.operators.dataproc import (
 @dataclass
 class ConfigTask:
     task_id:    str
-    operator:   str
     is_enabled: bool
+    operator:   str
     params:     dict = field(default_factory=dict)
     depends_on: list = field(default_factory=list)
 
