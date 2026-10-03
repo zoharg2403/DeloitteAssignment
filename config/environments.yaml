@@ -3,6 +3,8 @@ environments:
   dev:
     
     project_id: dataengproj-500110
+    region:     us-central1
+
     
     buckets:
       data_storage:     gs://deloitte-assignment-data
@@ -12,12 +14,10 @@ environments:
     
     dataform:
       repository_id:   DeloitteAssignment
-      region:          us-central1
       git_commitish:   main
       service_account: 240983826854-compute@developer.gserviceaccount.com
     
     dataproc:
-      region:        us-central1
       app_name:      spark
       views_enabled: true
       materialization_dataset: spark_materialization

@@ -74,9 +74,8 @@ class DataformTasks:
 
 class DataprocTasks:
 
-    def __init__(self, project_id: str, region: str):
+    def __init__(self, project_id: str):
         self.project_id = project_id
-        self.region = region
 
     @operator("DataprocCreateBatchOperator")
     def create_batch(self, cfg_task: ConfigTask):

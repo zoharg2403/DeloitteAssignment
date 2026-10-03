@@ -45,7 +45,7 @@ class JobSubmitter:
         batch_id = f"{cfg_job.batch_name}-{uuid.uuid4().hex[:8]}"
         main_script_uri = self.gcs_path_join(cfg_job.main_script)
 
-        parent = f"projects/{self.cfg.env.project_id}/locations/{self.cfg.env.dataproc.region}"
+        parent = f"projects/{self.cfg.env.project_id}/locations/{self.cfg.env.region}"
 
         batch = {
             "pyspark_batch": {
@@ -64,7 +64,7 @@ class JobSubmitter:
                 }
 
         with dataproc_v1.BatchControllerClient(
-                client_options={"api_endpoint": f"{self.cfg.env.dataproc.region}-dataproc.googleapis.com:443"}
+                client_options={"api_endpoint": f"{self.cfg.env.region}-dataproc.googleapis.com:443"}
                 ) as client:
             
             print("Submitting Dataproc job: job=%s; batch_id=%s; release_version=%s; parent=%s; batch=%s;" % (
@@ -78,7 +78,7 @@ class JobSubmitter:
             )
 
         print(f"Dataproc job Compleated: operation={response.operation.name};")
-        job_url = f"https://console.cloud.google.com/dataproc/batches/{self.cfg.env.dataproc.region}/{batch_id}?project={self.cfg.env.project_id}"
+        job_url = f"https://console.cloud.google.com/dataproc/batches/{self.cfg.env.region}/{batch_id}?project={self.cfg.env.project_id}"
         print(f"job url: {job_url}")
 
 

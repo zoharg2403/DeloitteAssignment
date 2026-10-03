@@ -18,11 +18,11 @@ class TaskFactory:
         providers = [
             DataformTasks(
                 project_id = self.cfg_env.project_id,
+                region =     self.cfg_env.region
                 **self.cfg_env.dataform
             ),
             DataprocTasks(
                 project_id = self.cfg_env.project_id,
-                **self.cfg_env.dataproc
             ),
             ]
         for prvdr in providers:
