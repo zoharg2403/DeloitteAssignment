@@ -10,6 +10,7 @@ airflow_deploy:
       - airflow_pipelines/utils/
       - config/airflow_pipelines/pipelines.yaml
       - config/environments.yaml
+      - config/common.yaml
   
   ignore_patterns:
     dirs:

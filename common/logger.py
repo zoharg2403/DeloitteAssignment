@@ -8,16 +8,18 @@ class Logger:
 
     _instance    = None
     _initialized = False
+    _default_cfg_file = "config/common.yaml"
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if not cls._initialized and cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self, cfg_file: str | Path | None = None):
         if self._initialized:
             return
-        self.cfg      = Config().load("config/common.yaml").logger
+        self.cfg_file = cfg_file or self._default_cfg_file
+        self.cfg      = Config().load(self.cfg_file).logger
         self.filepath = self._get_filepath() if self.cfg.to_file else None
         self.logger   = self._init_logger()
         self._initialized = True
@@ -55,7 +57,7 @@ class Logger:
 
 
 if __name__ == "__main__":
-    logger = Logger()
-    logger.info("Example")
-    logger2 = Logger()
-    logger2.info("Example")
+    # logger = Logger()
+    # logger.info("Example")
+    base_dir = Path(__file__).parent.parent
+    logger   = Logger(base_dir / "config" / "common.yaml")

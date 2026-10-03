@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from common.config import Config, _Root
 from common.logger import Logger
-from airflow_pipelines.utils.task_factory import TaskFactory, ConfigTask
+from airflow_pipelines.utils.task_factory import TaskFactory
 from airflow_pipelines.utils.config_dag import ConfigDag
 
 
@@ -42,7 +42,7 @@ class PipelineContext:
         inst = cls(
             pipeline_name = pipeline_name,
             cfg           = Config().load(base_dir / "config" / "airflow_pipelines" / "pipelines.yaml"), 
-            logger        = Logger(),
+            logger        = Logger(base_dir / "config" / "common.yaml"),
             )
         inst.task_factory = inst._init_task_factory()
         return inst
