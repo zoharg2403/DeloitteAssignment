@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass, asdict
 from datetime import datetime as dt, timedelta
+from typing import Any
 
 
 @dataclass
@@ -10,8 +11,7 @@ class ConfigDag:
     start_date:      str | dt  # str will be converted to datetime object
     catchup:         bool
     max_active_runs: int
-    retries:         int
-    retry_delay:     str | int | timedelta  # str/int will be converted to timedelta object
+    default_args:    dict[str, Any] | None = None
 
     def __post_init__(self):
         # convert start_date str -> datetime object
@@ -21,12 +21,15 @@ class ConfigDag:
             except ValueError:
                 raise ValueError(f"Invalid start_date format: {self.start_date}. Expected format: dd-mm-yyyy")
 
-        # convert retry_delay to timedelta
-        if not isinstance(self.retry_delay, timedelta):
+        # Convert retry_delay from seconds to timedelta for Airflow.
+        self.default_args = self.default_args or {}
+        self.default_args.setdefault("retries", 0)
+        self.default_args.setdefault("retry_delay", timedelta(seconds=300))
+        if not isinstance(self.default_args["retry_delay"], timedelta):
             try:
-                self.retry_delay = timedelta(seconds=int(self.retry_delay))
+                self.default_args["retry_delay"] = timedelta(seconds=int(self.default_args["retry_delay"]))
             except (ValueError, TypeError) as e:
-                raise ValueError(f"Invalid retry_delay: {self.retry_delay}") from e
+                raise ValueError(f"Invalid retry_delay: {self.default_args["retry_delay"]}") from e
 
     def __getitem__(self, key):
         return getattr(self, key)
@@ -37,5 +40,5 @@ class ConfigDag:
 
 # if __name__ == "__main__":
 #     from common.config import Config
-#     ConfigDag(**Config().load("config/airflow_pipelines/pipelines.yaml").pipelines.users_per_city.dag)
-
+#     tst = ConfigDag(**Config().load("config/airflow_pipelines/pipelines.yaml").pipelines.users_per_city.dag)
+#     print(tst.default_args)

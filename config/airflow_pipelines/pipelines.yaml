@@ -8,16 +8,17 @@ pipelines:
       start_date:      "01-01-2026"
       catchup:         false
       max_active_runs: 1
-      retries:         1
-      retry_delay:     120  # sec
+      default_args:
+        retries:       1
+        retry_delay:   120  # sec
 
     tasks:
-      - task_id: compile_dataform
-        operator: DataformCreateCompilationResultOperator
+      - task_id:    compile_dataform
+        operator:   DataformCreateCompilationResultOperator
         is_enabled: true
 
-      - task_id: silver_users
-        operator: DataformCreateWorkflowInvocationOperator
+      - task_id:    silver_users
+        operator:   DataformCreateWorkflowInvocationOperator
         is_enabled: true
         depends_on: [compile_dataform]
         params:
@@ -25,11 +26,11 @@ pipelines:
             invocation_config:
               included_targets:
                 - schema: silver
-                  name: users
+                  name:   users
               transitive_dependencies_included: true
 
-      - task_id: silver_address
-        operator: DataformCreateWorkflowInvocationOperator
+      - task_id:    silver_address
+        operator:   DataformCreateWorkflowInvocationOperator
         is_enabled: true
         depends_on: [compile_dataform]
         params:
@@ -37,5 +38,5 @@ pipelines:
             invocation_config:
               included_targets:
                 - schema: silver
-                  name: address
+                  name:   address
               transitive_dependencies_included: true
