@@ -39,9 +39,9 @@ class JobContext:
         cfg    = Config().load("config/dataproc/jobs.yaml")
         logger = Logger()
         spark  = SparkSessionBuilder.build(
-            app_name = f"{cfg.env.dataproc.app_name} - {job_name}",
-            views_enabled = cfg.env.dataproc.views_enabled,
-            materialization_dataset = f"{cfg.env.project_id}.{cfg.env.dataproc.materialization_dataset}"
+            app_name = f"{cfg.env.dataproc.spark_session.app_name} - {job_name}",
+            views_enabled = cfg.env.dataproc.spark_session.views_enabled,
+            materialization_dataset = f"{cfg.env.project_id}.{cfg.env.dataproc.spark_session.materialization_dataset}"
         )
         bigquery = BigQueryIO(
             project_id    = cfg.env.project_id, 

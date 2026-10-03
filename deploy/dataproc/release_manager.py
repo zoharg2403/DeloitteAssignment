@@ -21,9 +21,9 @@ class ReleaseManager:
         self.ignore_patterns   = ignore_patterns
 
         # properties
-        self.gcloud_ = None
+        self.gcloud_          = None
         self.release_version_ = None
-        self.release_uri_ = None
+        self.release_uri_     = None
 
         self._resolve()
 

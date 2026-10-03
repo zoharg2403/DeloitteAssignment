@@ -1,4 +1,6 @@
 
+import shutil
+import subprocess
 from copy import deepcopy
 from dataclasses import dataclass, field
 
@@ -74,8 +76,62 @@ class DataformTasks:
 
 class DataprocTasks:
 
-    def __init__(self, project_id: str):
+    def __init__(self, project_id: str, bucket_uri: str, release_version: str):
         self.project_id = project_id
+        self.bucket_uri = bucket_uri.strip('/')
+
+        # resolve release version and uri
+        if release_version == "latest":
+            self.release_version = self._get_latest_release_version()
+        else:
+            self.release_version = release_version.strip('/')
+            if not self._is_release_version_exists(self.release_uri):
+                raise RuntimeError(f"Release varsion '{self.release_version}' was not found in {self.bucket_uri}")
+
+        self.gcloud_      = None
+        self.release_uri_ = None
+
+    @property
+    def gcloud(self):
+        if self.gcloud_ is None:
+            self.gcloud_ = shutil.which("gcloud.cmd") or shutil.which("gcloud")
+            if not self.gcloud_:
+                raise RuntimeError("gcloud CLI is required")
+        return self.gcloud_
+
+    @property
+    def release_uri(self) -> str:
+        if self.release_uri_ is None:
+            self.release_uri_ = f"{self.bucket_uri}/{self.release_version.strip('/')}"
+        return self.release_uri_
+
+    def _get_latest_release_version(self) -> str:
+        """Get the latest release in the bucket"""
+        res = subprocess.run(
+            [self.gcloud, "storage", "ls", f"{self.bucket_uri}/"],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode != 0:
+            details = res.stderr.strip() or res.stdout.strip()
+            raise RuntimeError(f"Could not list releases in '{self.bucket_uri}'.\n{details}")
+
+        versions = [
+            line.strip().rstrip("/").rsplit("/", 1)[-1]
+            for line in res.stdout.splitlines()
+            ]
+        if not versions:
+            raise RuntimeError(f"No releases found in {self.bucket_uri}")
+
+        return max(versions, key=lambda v: v.split("-")[1])
+
+    def _is_release_version_exists(self, uri: str) -> bool:
+        res = subprocess.run(
+            [self.gcloud, "storage", "ls", uri.strip("/")],
+            capture_output=True,
+            text=True,
+        )
+        return res.returncode == 0 and bool(res.stdout.strip())
 
     @operator("DataprocCreateBatchOperator")
     def create_batch(self, cfg_task: ConfigTask):

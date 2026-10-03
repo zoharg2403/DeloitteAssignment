@@ -25,8 +25,10 @@ class TaskFactory:
             ),
             DataprocTasks(
                 project_id = self.cfg_env.project_id,
+                bucket_uri = self.cfg.env.buckets.dataproc_scripts,
+                release_version = self.cfg.env.dataproc.release_version
             ),
-            ]
+        ]
         for prvdr in providers:
             for method_name in dir(prvdr):
                 method = getattr(prvdr, method_name)
