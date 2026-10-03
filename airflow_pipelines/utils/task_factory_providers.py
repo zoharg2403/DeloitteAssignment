@@ -14,6 +14,7 @@ from airflow.providers.google.cloud.operators.dataproc import (
 class ConfigTask:
     task_id:    str
     operator:   str
+    is_enabled: bool
     params:     InitVar[dict | None] = None
     depends_on: list[str] | None = None
 

@@ -12,11 +12,11 @@ pipelines:
     tasks:
       - task_id: compile_dataform
         operator: DataformCreateCompilationResultOperator
-        is_enabled: True
+        is_enabled: true
 
       - task_id: silver_users
         operator: DataformCreateWorkflowInvocationOperator
-        is_enabled: True
+        is_enabled: true
         depends_on: [compile_dataform]
         params:
           workflow_invocation:
@@ -28,7 +28,7 @@ pipelines:
 
       - task_id: silver_address
         operator: DataformCreateWorkflowInvocationOperator
-        is_enabled: True
+        is_enabled: true
         depends_on: [compile_dataform]
         params:
           workflow_invocation:

@@ -64,5 +64,5 @@ if __name__ == "__main__":
     cfg = Config().load("config/airflow_pipelines/pipelines.yaml")
     pipeline_name = "users_per_city"
     cfg_pipeline = getattr(cfg.pipelines, pipeline_name)
-    task_factory = TaskFactory(cfg_env = cfg.env, cfg_tasks = cfg_pipeline.tasks)
-    task_factory.create_tasks()
+    task_factory = TaskFactory(cfg_env = cfg.env)
+    task_factory.create_tasks(cfg_pipeline.tasks)
