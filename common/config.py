@@ -2,11 +2,8 @@ from __future__ import annotations
 
 import json
 import os
-import importlib.util
-import pkgutil
 from pathlib import Path
 from typing import Any
-
 import yaml
 from dotenv import load_dotenv
 
@@ -23,8 +20,8 @@ class _Root(dict[str, Any]):
     def __getattr__(self, attr: str) -> Any:
         try:
             return self[attr]
-        except KeyError as e:
-            raise KeyError(f"'{self.__class__.__name__}' object has no key '{attr}'") from e
+        except (KeyError, AttributeError) as e:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{attr}'") from e
 
     def __str__(self) -> str:
         return json.dumps(self, indent=2, default=str)
