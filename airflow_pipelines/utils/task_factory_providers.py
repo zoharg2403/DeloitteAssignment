@@ -80,22 +80,24 @@ class DataformTasks:
 
 class DataprocTasks:
 
-    def __init__(self, project_id: str, bucket_uri: str, release_version: str, cfg_jobs: _Root):
+    def __init__(self, project_id: str, region: str, bucket_uri: str, release_version: str, cfg_jobs: _Root):
         self.project_id = project_id
+        self.region     = region
         self.bucket_uri = bucket_uri.strip('/')
+        self.cfg_jobs   = cfg_jobs
 
         # resolve release version and uri
         if release_version == "latest":
             self.release_version = self._get_latest_release_version()
+            self.release_uri     = f"{self.bucket_uri}/{self.release_version.strip('/')}"
         else:
             self.release_version = release_version.strip('/')
+            self.release_uri     = f"{self.bucket_uri}/{self.release_version.strip('/')}"
             if not self._is_release_version_exists(self.release_uri):
                 raise RuntimeError(f"Release varsion '{self.release_version}' was not found in {self.bucket_uri}")
 
-        self.cfg_jobs = cfg_jobs
 
         self.gcloud_      = None
-        self.release_uri_ = None
 
     @property
     def gcloud(self):
@@ -104,12 +106,6 @@ class DataprocTasks:
             if not self.gcloud_:
                 raise RuntimeError("gcloud CLI is required")
         return self.gcloud_
-
-    @property
-    def release_uri(self) -> str:
-        if self.release_uri_ is None:
-            self.release_uri_ = f"{self.bucket_uri}/{self.release_version.strip('/')}"
-        return self.release_uri_
 
     def gcs_path_join(self, path: Path | str) -> str:
         return f"{self.release_uri}/{Path(path).as_posix().strip('/')}"
@@ -170,5 +166,4 @@ class DataprocTasks:
             region     = self.region,
             batch_id   = batch_id,
             batch      = batch,
-            **params,
         )

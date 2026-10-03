@@ -25,6 +25,7 @@ class TaskFactory:
             ),
             DataprocTasks(
                 project_id      = self.cfg.env.project_id,
+                region          = self.cfg.env.region,
                 bucket_uri      = self.cfg.env.buckets.dataproc_scripts,
                 release_version = self.cfg.env.dataproc.release_version,
                 cfg_jobs        = self.cfg.jobs
