@@ -28,7 +28,6 @@ class DagSubmitter:
     def gcs_path_join(self, path: Path | str):
         return f"{self.bucket_uri}/dags/{Path(path).as_posix().strip('/')}"
 
-
     def is_ignored(self, path: Path | str):
         ignore_patterns = self.cfg.airflow_deploy.ignore_patterns
         path = Path(path).resolve()
