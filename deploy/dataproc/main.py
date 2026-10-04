@@ -82,6 +82,6 @@ class JobSubmitter:
 
 
 if __name__ == "__main__":
-    job_name="users_per_city" # must match the "config/dataproc/jobs.yaml/jobs:{job_name}.py"
     submitter = JobSubmitter()
-    submitter.run(job_name)
+    # submitter.run("users_per_city")
+    submitter.run("users_per_city_wo_aqe")

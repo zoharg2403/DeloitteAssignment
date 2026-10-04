@@ -3,7 +3,7 @@ dataproc_deploy:
   release:
     local_dir: "outputs/release"
     create_new: false
-    requested_version: latest  # release-20261003_154934-0d10a8b
+    requested_version: latest  # release-20261004_213028-08f9cf1
   assets:
     files:
       - dataproc/jobs/
