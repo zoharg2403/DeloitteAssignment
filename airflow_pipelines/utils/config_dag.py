@@ -6,12 +6,14 @@ from typing import Any
 
 @dataclass
 class DefaultArgs(Mapping[str, Any]):
+    """Airflow task defaults with configured retry delays normalized to timedeltas."""
+
     retries:                   int                          = 0
     retry_delay:               str | int | timedelta        = timedelta(seconds=5*60)  # 5 minutes [sec]
     retry_exponential_backoff: bool                         = False
     max_retry_delay:           str | int | timedelta | None = None                     # [sec]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # Convert retry_delay from seconds (str/int) to timedelta for Airflow
         if not isinstance(self.retry_delay, timedelta):
             try:
@@ -43,22 +45,24 @@ class DefaultArgs(Mapping[str, Any]):
 
 @dataclass
 class ConfigDag(Mapping[str, Any]):
+    """DAG configuration normalized for use as keyword arguments to Airflow."""
+
     dag_id:          str
-    schedule:        str
+    schedule:        str | None
     start_date:      str | dt  # str will be converted to datetime object
     catchup:         bool
     max_active_runs: int
     default_args:    dict[str, Any] | DefaultArgs | None = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # convert start_date str -> datetime object
         if not isinstance(self.start_date, dt):
             try:
                 self.start_date = dt.strptime(self.start_date, "%d-%m-%Y")
-            except ValueError:
-                raise ValueError(f"Invalid start_date format: {self.start_date}. Expected format: dd-mm-yyyy")
+            except ValueError as e:
+                raise ValueError(f"Invalid start_date format: {self.start_date}. Expected format: dd-mm-yyyy") from e
 
-        self.default_args = DefaultArgs(**self.default_args)
+        self.default_args = DefaultArgs(**(self.default_args or {}))
 
     def __getitem__(self, key: str) -> Any:
         try:

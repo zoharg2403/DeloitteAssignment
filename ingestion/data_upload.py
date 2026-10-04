@@ -10,17 +10,19 @@ from common.logger import Logger
 
 class GCSUpload:
 
-    cfg = Config().load("config/ingestion.yaml")
+    cfg    = Config().load("config/ingestion.yaml")
     logger = Logger()
 
-    gcs_bucket_name = cfg.env.buckets.data_storage.lstrip("gs://").strip("/")
-    gcs_prefix = cfg.ingestion.gcs.blobs.incoming_blob.strip("/")
+    gcs_bucket_name = cfg.env.buckets.data_storage.removeprefix("gs://").strip("/")
+    gcs_prefix      = cfg.ingestion.gcs.blobs.incoming_blob.strip("/")
 
     local_dir = Path(cfg.ingestion.local.root_dir)
-    assert local_dir.is_dir(), NotADirectoryError("config/ingestion.yaml/ingestion.local.root_dir must be a directory path")
+    if not local_dir.is_dir():
+        raise NotADirectoryError(f"Configured ingestion directory does not exist or is not a directory: {local_dir}")
 
     @classmethod
-    def upload_files(cls):
+    def upload_files(cls) -> None:
+        """Upload configured local files and fail if any individual upload fails."""
         cls.logger.info("Starting GCS Upload (source=%s, dest=%s)",
                         cls.local_dir, f"gs://{cls.gcs_bucket_name}/{cls.gcs_prefix}")
 
@@ -36,7 +38,7 @@ class GCSUpload:
         nfiles = len(files)
         cls.logger.info(f"{nfiles} files found")
 
-        failed = []
+        failed: list[tuple[Path, Exception]] = []
         for i, file in enumerate(files, start=1):
             try:
                 blob = bucket.blob(f"{cls.gcs_prefix}/{file.name}")
@@ -51,7 +53,7 @@ class GCSUpload:
 
             except (ge.NotFound, ge.Unauthorized, ge.ServiceUnavailable) as e:
                 cls.logger.error(f"File Upload Failed with error:\n{e}")
-                raise e
+                raise
 
             except Exception as e:
                 failed.append((file, e))
@@ -60,9 +62,10 @@ class GCSUpload:
                 cls.logger.info(f"Upload file {i} / {nfiles}")
 
         if failed:
-            cls.logger.info(f"File upload ended with {len(failed)} failed file(s)")
+            cls.logger.error(f"File upload ended with {len(failed)} failed file(s)")
             for f, e in failed:
                 cls.logger.warning(f"  - {f}: {e}")
+            raise RuntimeError(f"Failed to upload {len(failed)} of {nfiles} file(s)")
         else:
             cls.logger.info("All files uploaded successfully!")
 

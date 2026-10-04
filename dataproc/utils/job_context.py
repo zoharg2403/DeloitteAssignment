@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from types import TracebackType
 from pyspark.sql import SparkSession
 
 from common.config import Config, _Root
@@ -56,10 +57,16 @@ class JobContext:
             bigquery      = bigquery
             )
 
-    def __enter__(self):
+    def __enter__(self) -> JobContext:
         return self
 
-    def __exit__(self):
+    def __exit__(
+        self,
+        _exc_type: type[BaseException] | None,
+        _exc_value: BaseException | None,
+        _traceback: TracebackType | None,
+    ) -> None:
+        del _exc_type, _exc_value, _traceback
         self.close()
 
     def close(self) -> None:

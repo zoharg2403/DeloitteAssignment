@@ -1,4 +1,9 @@
 
+from __future__ import annotations
+
+from collections.abc import Iterable
+from airflow.models import BaseOperator
+
 from airflow_pipelines.utils.task_factory_providers import (
     ConfigTask,
     DataformTasks,
@@ -8,9 +13,10 @@ from airflow_pipelines.utils.task_factory_providers import (
 from common.config import Config
 
 class TaskFactory:
-    
+
     def __init__(self, cfg: Config):
-        self.cfg   = cfg
+        self.cfg = cfg
+
         self._creators = {}
         self._init_creators()
 
@@ -37,38 +43,45 @@ class TaskFactory:
                 operator_name = getattr(method, "_operator", None)
                 if operator_name:
                     if operator_name in self._creators:
-                        raise ValueError(f"Duplicate task operator registration: {operator_name}")
+                        raise ValueError(f"Duplicate operator registration: {operator_name}")
                     self._creators[operator_name] = method
 
-    def create_tasks(self, tasks: list):
-        cfg_tasks, created_tasks = {}, {}
+    def create_tasks(self, tasks: list[dict]) -> Iterable[BaseOperator]:
+        """Create enabled Airflow operators and connect their configured dependencies."""
+        cfg_tasks:     dict[str, ConfigTask]   = {}
+        created_tasks: dict[str, BaseOperator] = {}
+
         for task in tasks:
             cfg_task = ConfigTask(**task)
-            if cfg_task.is_enabled is True:
-                try:
-                    creator = self._creators[cfg_task.operator]
-                except KeyError as e:
-                    raise ValueError(f"Unsupported operator: {cfg_task.operator}") from e
-            cfg_tasks[cfg_task.task_id]     = cfg_task
+            if not cfg_task.is_enabled:
+                continue
+            
+            if cfg_task.task_id in cfg_tasks:
+                raise ValueError(f"Duplicate task id: {cfg_task.task_id}")
+            cfg_tasks[cfg_task.task_id] = cfg_task
+
+            try:
+                creator = self._creators[cfg_task.operator]
+            except KeyError as e:
+                raise ValueError(f"Unsupported operator: {cfg_task.operator}") from e
             created_tasks[cfg_task.task_id] = creator(cfg_task)
 
-        if not cfg_tasks or not created_tasks:
+        if not created_tasks:
             raise ValueError("No enabled tasks are found")
 
         for task_id, cfg_task in cfg_tasks.items():
             for dependency in cfg_task.depends_on or []:
-                try:
-                    created_tasks[dependency] >> created_tasks[task_id]
-                except KeyError as e:
-                    raise KeyError(f"Task '{task_id}' is unknown or depends on unknown task '{dependency}'")
+                if dependency not in created_tasks:
+                    raise ValueError(f"Task '{task_id}' depends on unknown or disabled task '{dependency}'")
+                created_tasks[dependency] >> created_tasks[task_id]
 
         return created_tasks.values()
 
 
-if __name__ == "__main__":
-    from common.config import _Root, Config
-    cfg = Config().load("config/airflow_pipelines/pipelines.yaml")
-    pipeline_name = "users_per_city"
-    cfg_pipeline = getattr(cfg.pipelines, pipeline_name)
-    task_factory = TaskFactory(cfg = cfg)
-    task_factory.create_tasks(cfg_pipeline.tasks)
+# if __name__ == "__main__":
+#     from common.config import Config
+#     cfg = Config().load("config/airflow_pipelines/pipelines.yaml", "config/dataproc/jobs.yaml")
+#     pipeline_name = "users_per_city"
+#     cfg_pipeline = getattr(cfg.pipelines, pipeline_name)
+#     task_factory = TaskFactory(cfg = cfg)
+#     task_factory.create_tasks(cfg_pipeline.tasks)

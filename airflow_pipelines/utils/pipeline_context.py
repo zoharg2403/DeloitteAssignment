@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
 from dataclasses import dataclass
+from types import TracebackType
+from airflow.models import BaseOperator
 
 from common.config import Config, _Root
 from common.logger import Logger
@@ -30,10 +33,13 @@ class PipelineContext:
     def cfg_dag(self) -> ConfigDag:
         return ConfigDag(**self.cfg_pipeline.dag)
 
-    def create_tasks(self):
+    def create_tasks(self) -> Iterable[BaseOperator]:
+        """Create the Airflow operators configured for this pipeline."""
+        if self.task_factory is None:
+            raise RuntimeError("Pipeline task factory has not been initialized")
         return self.task_factory.create_tasks(self.cfg_pipeline.tasks)
 
-    def _init_task_factory(self):
+    def _init_task_factory(self) -> TaskFactory:
         return TaskFactory(cfg = self.cfg)
 
     @classmethod
@@ -50,17 +56,22 @@ class PipelineContext:
         inst.task_factory = inst._init_task_factory()
         return inst
 
-    def __enter__(self):
+    def __enter__(self) -> PipelineContext:
         return self
 
-    def __exit__(self):
+    def __exit__(
+        self,
+        _exc_type: type[BaseException] | None,
+        _exc_value: BaseException | None,
+        _traceback: TracebackType | None,
+    ) -> None:
+        del _exc_type, _exc_value, _traceback
         self.close()
 
     def close(self) -> None:
-        self.logger.info("Stopping Spark session")
-        self.spark_session.stop()
+        """Close the context; no external runtime resources are owned here."""
+        self.logger.info("Pipeline context closed")
 
 # if __name__ == "__main__":
 #     ctx = PipelineContext.create("users_per_city")
 #     print({**ctx.cfg_dag})
-

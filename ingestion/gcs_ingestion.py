@@ -13,6 +13,7 @@ from ingestion.utils.bq_service import BigQueryService
 class GCSIngestion:
 
     def __init__(self):
+        """Initialize GCS, BigQuery, and audit services from project configuration."""
         self.cfg = Config().load("config/ingestion.yaml")
         self.logger = Logger()
 
@@ -88,19 +89,20 @@ class GCSIngestion:
             raise e
 
     def run(self):
+        """Load incoming files and raise an error if any file fails processing."""
         self.logger.info(f"Starting data ingestion (source=gs://{self.ingestion_bucket}/{self.gcs_service.incoming_blob})")
         files = self.gcs_service.list_incoming_files()
         nfiles = len(files)
         self.logger.info(f"{nfiles} files found in source bucket")
 
-        failed = []
+        failed: list[tuple[str, Exception, str]] = []
         for i, blob in enumerate(files, start=1):
             try:
                 self._process_file(blob)
-            except (BadRequest, NotFound) as e:
-                raise 
-            except Exception as e:
-                failed.append((blob.name, e.__class__.__name__, str(e), traceback.format_exc()))
+            except (BadRequest, NotFound):
+                raise
+            except Exception as error:
+                failed.append((blob.name, error, traceback.format_exc()))
             
             if i == 1 or i % 3 == 0 or i == nfiles:
                 self.logger.info(f"Load file {i} / {nfiles}")
@@ -110,11 +112,12 @@ class GCSIngestion:
                 f"File load ended with {len(failed)} failed file(s):" + "\n" + 
                 "\n".join(
                     [
-                        f"FILE: {filename} failed with: {exc_type}: {exc_msg}\n{tb}"
-                        for filename, exc_type, exc_msg, tb in failed
+                        f"FILE: {filename} failed with: {type(error).__name__}: {error}\n{tb}"
+                        for filename, error, tb in failed
                     ]
                 )
             )
+            raise RuntimeError(f"Failed to ingest {len(failed)} of {nfiles} file(s)")
         else:
             self.logger.info("All files loaded successfully!")
 
