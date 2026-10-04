@@ -21,8 +21,8 @@ class ConfigTask:
     task_id:    str
     is_enabled: bool
     operator:   str
-    params:     dict = field(default_factory=dict)
     depends_on: list = field(default_factory=list)
+    params:     dict = field(default_factory=dict)
 
     def copy_params(self):
         return deepcopy(self.params)
