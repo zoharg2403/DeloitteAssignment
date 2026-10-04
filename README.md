@@ -28,6 +28,7 @@ Dataproc Serverless
   - [Airflow pipelines](#airflow-pipelines)
   - [Deployment](#deployment)
 - [Configuration reference](#configuration-reference)
+- [Suggested future improvements](#suggested-future-improvements)
 
 ## Repository layout
 
@@ -330,3 +331,23 @@ Airflow read the DAGs automatically from `dags/` blob.
 - [`config/dataproc/jobs.yaml`](config/dataproc/jobs.yaml): Per-Dataproc batch job configuration (e.g. main script, inputs, outputs, write mode, batch kwargs).
 - [`config/deploy/dataproc.yaml`] and [`config/deploy/airflow_pipelines.yaml`]: Dataproc release and DAGs upload (and submission) settings.
 - [`config/common.yaml`](config/common.yaml): Common utils configurations.
+
+## Suggested future improvements
+
+Possible next steps as the project grows:
+
+- **Automated testing and CI:** Add unit tests for configuration loading,
+  ingestion services, task creation, and deployment packaging, then run them
+  with linting and type checks on each change.
+- **Configuration validation:** Validate pipeline, task, and job YAML against
+  explicit schemas before starting uploads or cloud jobs, with clear errors for
+  missing fields and invalid references.
+- **More extensible orchestration:** Add provider types as needed and validate
+  operator parameters and dependencies before creating a DAG.
+- **Reliable ingestion operations:** Add configurable retries, per-file
+  outcomes, and operational metrics or alerts for failed and delayed loads.
+- **Safer credentials:** Keep credentials out of uploaded configuration and
+  use Google Cloud Secret Manager or workload identity for any secrets and
+  service-to-service authentication.
+- **Reproducible releases:** Record the source revision and dependency versions
+  with each Dataproc release, and promote a tested release between environments.
