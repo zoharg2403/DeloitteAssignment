@@ -86,6 +86,7 @@ class AuditService:
         WHERE file_md5 = @file_md5 
             AND target_dataset = @target_dataset
             AND target_table = @target_table
+            AND status = @success
         LIMIT 1
         """
         job_config = bigquery.QueryJobConfig(
@@ -93,6 +94,7 @@ class AuditService:
                 bigquery.ScalarQueryParameter("file_md5", "STRING", blob_metadata.file_md5),
                 bigquery.ScalarQueryParameter("target_dataset", "STRING", blob_metadata.target_dataset),
                 bigquery.ScalarQueryParameter("target_table", "STRING", blob_metadata.target_table),
+                bigquery.ScalarQueryParameter("success", "STRING", AuditStatus.SUCCESS),
                 ]
             )
         result = self.bq_client.query(query, job_config=job_config).result()
