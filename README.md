@@ -359,13 +359,12 @@ Airflow read the DAGs automatically from `dags/` blob.
 ## Suggested future improvements
 
 Possible next steps as the project grows:
-
 - **Automated testing and CI:** Add unit tests for configuration loading,
   ingestion services, task creation, and deployment packaging, then run them
   with linting and type checks on each change.
 - **Configuration validation:** Validate pipeline, task, and job YAML against
   explicit schemas before starting uploads or cloud jobs, with clear errors for
-  missing fields and invalid references.
+  missing fields and invalid references (Typed adaptation of configuration into Airflow’s expected arguments - dataclass / pydantic).
 - **More extensible orchestration:** Add provider types as needed and validate
   operator parameters and dependencies before creating a DAG.
 - **Reliable ingestion operations:** Add configurable retries, per-file
@@ -375,3 +374,7 @@ Possible next steps as the project grows:
   service-to-service authentication.
 - **Reproducible releases:** Record the source revision and dependency versions
   with each Dataproc release, and promote a tested release between environments.
+- **Task Factory Construction:** init only needed providers. (DataprocTasks init resolves the configured release version even for a workflow that may not need a Dataproc task).
+- **Mesure metrics:** Record runtime, shuffle read/write, spill, cost.
+- **File upload / ingestion:** Retry on fail, make schema expectations explicit to catch unexpected changes early.
+- 

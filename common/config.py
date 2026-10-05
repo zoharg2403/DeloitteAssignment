@@ -36,11 +36,12 @@ class Config:
     default_dotenv:  ClassVar[str] = ".env"
     default_env:     ClassVar[str] = "dev"
     default_env_cfg: ClassVar[str] = "config/environments.yaml"
-    _root:           ClassVar[_Root | None] = None
 
     def __init__(self):
         load_dotenv(self.default_dotenv, override=True)
         self.environment = os.getenv("APP_ENV", self.default_env)
+        
+        self._root = None
 
     @staticmethod
     def _read_yaml(path: Path | str) -> dict[str, Any]:
