@@ -1,0 +1,301 @@
+user_id,country,region,city,address
+0,United States,Idaho,Boise,Ap #892-8330 Enim Rd.
+1,United States,Idaho,Idaho Falls,523-7519 Dapibus Ave
+2,United States,Connecticut,Bridgeport,Ap #181-7693 Gravida Av.
+3,United States,Idaho,Boise,"P.O. Box 490, 5807 Neque Rd."
+4,United States,Idaho,Boise,714-9146 Mauris St.
+5,United States,Idaho,Boise,Ap #863-2269 Semper Avenue
+6,United States,Arizona,Mesa,Ap #279-3872 Eu Rd.
+7,United States,Idaho,Boise,Ap #702-6271 Morbi Rd.
+8,United States,Michigan,Grand Rapids,"P.O. Box 415, 4723 Lacus Rd."
+9,United States,Ohio,Columbus,Ap #147-5573 Donec Street
+10,United States,Tennessee,Memphis,Ap #661-2071 Duis St.
+11,United States,Wisconsin,Kenosha,Ap #955-8952 Enim. St.
+12,United States,Idaho,Boise,"897-2067 Eu, Rd."
+13,United States,Mississippi,Biloxi,9315 Justo. Rd.
+14,United States,Idaho,Boise,"P.O. Box 409, 1055 Litora Street"
+15,United States,Idaho,Boise,9428 Augue Rd.
+16,United States,Michigan,Lansing,Ap #644-4761 Vestibulum Rd.
+17,United States,Idaho,Boise,"P.O. Box 135, 3833 Justo Street"
+18,United States,Idaho,Meridian,"462-9443 Ante, Av."
+19,United States,Idaho,Boise,Ap #183-2253 Neque Av.
+20,United States,Oklahoma,Lawton,146-5312 Ut St.
+21,United States,Wyoming,Casper,"P.O. Box 230, 6229 Est. Road"
+22,United States,Idaho,Boise,3850 Fringilla Avenue
+23,United States,Arkansas,Fayetteville,783-4262 Nunc St.
+24,United States,Idaho,Boise,837-5914 Nulla St.
+25,United States,Illinois,Joliet,5924 Mauris Avenue
+26,United States,Idaho,Boise,587-8491 Aliquam Ave
+27,United States,Wyoming,Cheyenne,701-2907 Neque Ave
+28,United States,Maryland,Rockville,"Ap #532-5359 Non, St."
+29,United States,Idaho,Boise,"Ap #841-9406 Sed, St."
+30,United States,Idaho,Boise,"P.O. Box 252, 6723 Cras Rd."
+31,United States,Idaho,Boise,910-9430 Ut Rd.
+32,United States,Idaho,Boise,Ap #699-8316 Lacinia Rd.
+33,United States,Idaho,Boise,7564 Lectus. Street
+34,United States,Maryland,Annapolis,Ap #418-4082 Dui Rd.
+35,United States,Arizona,Tucson,Ap #453-9912 Aenean St.
+36,United States,Maine,Bangor,"P.O. Box 747, 4267 Placerat, St."
+37,United States,Arizona,Glendale,Ap #718-2862 Ante Rd.
+38,United States,Massachusetts,Boston,726-138 Ac St.
+39,United States,Delaware,Wilmington,407-6737 Eleifend. Av.
+40,United States,Idaho,Boise,233-3719 Varius Rd.
+41,United States,Idaho,Boise,Ap #584-7463 Pede St.
+42,United States,California,San Diego,Ap #152-3244 Nec Ave
+43,United States,Idaho,Boise,"P.O. Box 873, 6985 Est St."
+44,United States,Idaho,Boise,"P.O. Box 318, 8274 Semper St."
+45,United States,Idaho,Boise,7218 Gravida Ave
+46,United States,Idaho,Boise,"9684 Vel, Street"
+47,United States,Idaho,Boise,585-2066 Ultrices Street
+48,United States,Wyoming,Laramie,"P.O. Box 628, 7459 Sed Avenue"
+49,United States,Minnesota,Duluth,Ap #478-8176 Varius Street
+50,United States,Oregon,Portland,126-7585 Interdum. Av.
+51,United States,Idaho,Boise,437-6962 Tempus Street
+52,United States,Idaho,Boise,"P.O. Box 679, 6141 Augue. Av."
+53,United States,Idaho,Boise,387-1702 Sed Ave
+54,United States,Ohio,Cleveland,625-1967 Et Street
+55,United States,Idaho,Boise,Ap #223-5651 Sed Ave
+56,United States,Idaho,Boise,231-449 Accumsan Avenue
+57,United States,Virginia,Richmond,"Ap #437-5207 Vel, Street"
+58,United States,Idaho,Boise,418-9510 Nunc Rd.
+59,United States,Massachusetts,Springfield,2198 Vel St.
+60,United States,Idaho,Boise,932-1221 Ridiculus St.
+61,United States,Minnesota,Rochester,383-7001 Nisi St.
+62,United States,Idaho,Boise,Ap #465-9947 Eget Road
+63,United States,Idaho,Boise,4755 Vulputate St.
+64,United States,Idaho,Boise,"P.O. Box 101, 5745 Eu Rd."
+65,United States,Utah,Salt Lake City,"P.O. Box 607, 1879 Sed Av."
+66,United States,Alabama,Birmingham,202-1013 Mus. Ave
+67,United States,Idaho,Boise,Ap #614-575 Mattis Av.
+68,United States,Idaho,Boise,"P.O. Box 415, 446 Nec, St."
+69,United States,Arizona,Mesa,"P.O. Box 908, 8940 Lectus Rd."
+70,United States,Idaho,Boise,"P.O. Box 976, 3948 A Rd."
+71,United States,Vermont,Montpelier,Ap #586-473 Sem Street
+72,United States,Illinois,Rockford,848-229 Lacus. St.
+73,United States,Idaho,Boise,"P.O. Box 169, 2034 Nisi. Street"
+74,United States,Idaho,Boise,Ap #603-4300 Ipsum Rd.
+75,United States,Idaho,Boise,6951 Orci. Road
+76,United States,Virginia,Richmond,"P.O. Box 549, 5586 Nisl Rd."
+77,United States,Idaho,Boise,Ap #520-8994 Tristique St.
+78,United States,Ohio,Cincinnati,Ap #127-250 Interdum Street
+79,United States,Idaho,Boise,Ap #659-4356 Sit Road
+80,United States,Idaho,Boise,8437 Elit. Road
+81,United States,California,San Diego,"489-2702 Suscipit, Rd."
+82,United States,Idaho,Boise,"396-6815 Aliquam, Street"
+83,United States,Tennessee,Memphis,9588 Imperdiet Street
+84,United States,Alaska,Fairbanks,Ap #953-723 Nascetur Ave
+85,United States,Mississippi,Gulfport,"P.O. Box 145, 5906 Nunc St."
+86,United States,Pennsylvania,Reading,7046 Ipsum St.
+87,United States,Idaho,Boise,875-7744 Cursus. Ave
+88,United States,Idaho,Boise,"P.O. Box 506, 9020 Netus Street"
+89,United States,Alaska,Ketchikan,703-7091 Et Av.
+90,United States,Idaho,Boise,777-8424 Morbi Av.
+91,United States,Utah,Sandy,"349-3348 Ornare, Street"
+92,United States,Maine,Auburn,"P.O. Box 745, 4264 Fringilla Road"
+93,United States,Idaho,Boise,"769-6176 In, Avenue"
+94,United States,Idaho,Boise,"162-7857 Vulputate, St."
+95,United States,Idaho,Boise,Ap #631-1089 Sit Avenue
+96,United States,Idaho,Boise,"476-9483 Eu, Avenue"
+97,United States,Idaho,Boise,"P.O. Box 197, 4222 Vitae Avenue"
+98,United States,Idaho,Boise,Ap #897-6817 Mollis Avenue
+99,United States,Maine,South Portland,"806 Eu, Ave"
+100,United States,Idaho,Boise,Ap #154-6200 Pharetra Avenue
+101,United States,Nevada,North Las Vegas,"894-5980 Eu, Av."
+102,United States,Idaho,Boise,8125 Id Rd.
+103,United States,Hawaii,Kailua,"P.O. Box 671, 6216 Nec, Ave"
+104,United States,Idaho,Boise,"P.O. Box 662, 1237 Nascetur Road"
+105,United States,California,Los Angeles,985-9923 Cras Rd.
+106,United States,Idaho,Boise,Ap #375-9742 Nibh. Road
+107,United States,Kansas,Topeka,7804 Tincidunt. Ave
+108,United States,Idaho,Boise,8360 Enim. Av.
+109,United States,Idaho,Boise,"315-8997 Quis, Rd."
+110,United States,Arizona,Mesa,503-998 Elit. Avenue
+111,United States,Idaho,Boise,Ap #718-3534 Nullam Rd.
+112,United States,Idaho,Boise,193-9796 Tincidunt St.
+113,United States,Missouri,Kansas City,"P.O. Box 728, 3589 Enim. Rd."
+114,United States,Wyoming,Gillette,Ap #232-6250 Sed Street
+115,United States,Wyoming,Rock Springs,926-2864 Magna Avenue
+116,United States,Nevada,Carson City,"P.O. Box 982, 7977 Sed Road"
+117,United States,Hawaii,Honolulu,Ap #844-5001 Arcu Street
+118,United States,Ohio,Toledo,Ap #406-5935 Ipsum St.
+119,United States,Idaho,Boise,"P.O. Box 859, 2190 Fusce St."
+120,United States,Idaho,Boise,794-8205 Vivamus Street
+121,United States,Arkansas,Jonesboro,"Ap #293-5455 Auctor, Road"
+122,United States,Idaho,Boise,Ap #433-2816 Curabitur St.
+123,United States,Illinois,Naperville,"Ap #476-2201 Imperdiet, Rd."
+124,United States,Idaho,Boise,Ap #189-4187 Erat Avenue
+125,United States,Kentucky,Covington,"328-9861 Amet, Avenue"
+126,United States,Idaho,Boise,"1040 Leo, Av."
+127,United States,Idaho,Boise,291-6866 Enim Street
+128,United States,Maine,Bangor,855-983 Imperdiet Ave
+129,United States,Utah,Sandy,646-8121 Per Street
+130,United States,Idaho,Boise,"P.O. Box 447, 301 Duis Ave"
+131,United States,Idaho,Boise,Ap #376-6589 Aliquet St.
+132,United States,Pennsylvania,Pittsburgh,9052 Urna St.
+133,United States,Idaho,Boise,Ap #202-7465 Massa Street
+134,United States,Idaho,Boise,265-5293 Facilisis. Av.
+135,United States,Idaho,Boise,706-9390 Erat Avenue
+136,United States,Idaho,Boise,192-1857 Erat Av.
+137,United States,Idaho,Boise,Ap #571-8674 Amet Av.
+138,United States,Idaho,Boise,"Ap #322-9382 Est, Rd."
+139,United States,Idaho,Boise,522-8121 Feugiat. Ave
+140,United States,Idaho,Pocatello,471-2694 Sit Street
+141,United States,Idaho,Boise,906-8625 Vitae Av.
+142,United States,Michigan,Flint,548-7202 Nunc Av.
+143,United States,Maryland,Baltimore,4859 Sollicitudin Rd.
+144,United States,Idaho,Boise,6163 Gravida Road
+145,United States,Texas,Houston,"543-8137 Sapien, St."
+146,United States,Idaho,Boise,"P.O. Box 950, 5055 Ut Road"
+147,United States,Idaho,Boise,"P.O. Box 967, 2615 Suspendisse Avenue"
+148,United States,Michigan,Warren,Ap #707-4642 Libero. Ave
+149,United States,Idaho,Boise,"P.O. Box 319, 9634 Risus St."
+150,United States,Indiana,Gary,Ap #588-4312 Tellus. Av.
+151,United States,Virginia,Richmond,Ap #165-4956 Justo Rd.
+152,United States,Idaho,Boise,"P.O. Box 794, 6421 In Ave"
+153,United States,Virginia,Newport News,"709-7337 Facilisis, Rd."
+154,United States,Idaho,Boise,Ap #931-4104 Magnis Ave
+155,United States,Pennsylvania,Reading,254-183 Placerat Ave
+156,United States,Idaho,Meridian,Ap #654-1764 Arcu. Rd.
+157,United States,Idaho,Boise,"P.O. Box 976, 6716 Volutpat Rd."
+158,United States,Delaware,Bear,"Ap #752-6583 Sed, Av."
+159,United States,Wyoming,Laramie,"P.O. Box 312, 2126 Ultrices. St."
+160,United States,Kansas,Olathe,Ap #205-3988 Nunc St.
+161,United States,Idaho,Boise,670-3933 Vestibulum Rd.
+162,United States,Idaho,Boise,481-3644 Dis Rd.
+163,United States,Idaho,Boise,Ap #280-5790 Urna Road
+164,United States,Minnesota,Rochester,"P.O. Box 975, 9155 Cursus. St."
+165,United States,Kansas,Topeka,Ap #261-9125 Accumsan Av.
+166,United States,Florida,Tallahassee,322-6525 Ac Avenue
+167,United States,Idaho,Boise,Ap #495-2771 Quis Rd.
+168,United States,Idaho,Boise,946-9042 Neque. St.
+169,United States,Florida,Tallahassee,7545 Sit Road
+170,United States,Idaho,Boise,2893 Hendrerit Rd.
+171,United States,Hawaii,Kapolei,9452 Dui. Rd.
+172,United States,Idaho,Boise,727-2706 Quis St.
+173,United States,Idaho,Boise,962-4580 Curabitur Av.
+174,United States,Idaho,Boise,4838 Varius. St.
+175,United States,Idaho,Boise,Ap #634-3111 In Ave
+176,United States,Idaho,Boise,"P.O. Box 457, 6348 Et St."
+177,United States,Idaho,Boise,Ap #119-1512 Tincidunt Street
+178,United States,Idaho,Boise,Ap #129-8117 Sagittis Street
+179,United States,Mississippi,Gulfport,218-9053 Curabitur Av.
+180,United States,Idaho,Boise,Ap #488-9950 Sagittis Road
+181,United States,Idaho,Boise,Ap #521-909 Amet St.
+182,United States,Idaho,Boise,1514 Mi Av.
+183,United States,Idaho,Boise,7066 Vel Avenue
+184,United States,Idaho,Boise,Ap #316-4899 Vivamus St.
+185,United States,Montana,Bozeman,974-5683 Mauris Av.
+186,United States,Idaho,Boise,Ap #417-5875 Mattis Avenue
+187,United States,Idaho,Boise,Ap #592-7250 Urna. Ave
+188,United States,Idaho,Boise,Ap #790-4818 Ut Street
+189,United States,Idaho,Boise,Ap #684-6404 Ridiculus Ave
+190,United States,Louisiana,Lafayette,293-6294 Lacinia Rd.
+191,United States,Michigan,Warren,Ap #361-1614 Consequat Road
+192,United States,Idaho,Boise,"P.O. Box 414, 5168 Odio Avenue"
+193,United States,Kansas,Topeka,Ap #957-4136 Id Rd.
+194,United States,Idaho,Boise,922-7369 Erat. Road
+195,United States,Vermont,Rutland,Ap #653-7567 Pellentesque Street
+196,United States,Idaho,Boise,"6443 At, Av."
+197,United States,California,Sacramento,888-2056 Phasellus St.
+198,United States,Indiana,Fort Wayne,851-4688 Mi St.
+199,United States,Idaho,Boise,889-4660 Nullam St.
+200,United States,Idaho,Boise,8594 Diam St.
+201,United States,Massachusetts,Springfield,"P.O. Box 949, 4042 Eros Avenue"
+202,United States,Idaho,Boise,633-5056 Facilisis. Av.
+203,United States,Idaho,Boise,453-1897 Metus. Rd.
+204,United States,Idaho,Boise,623-9217 Cras Road
+205,United States,Delaware,Pike Creek,Ap #627-5279 Praesent Rd.
+206,United States,Idaho,Boise,"P.O. Box 780, 3355 Donec St."
+207,United States,Kansas,Topeka,383-4693 Fusce Avenue
+208,United States,Minnesota,Minneapolis,"Ap #106-4589 Tempor, Avenue"
+209,United States,Virginia,Norfolk,"P.O. Box 513, 9914 Magna Ave"
+210,United States,Idaho,Boise,"P.O. Box 184, 7956 Non, Av."
+211,United States,Idaho,Boise,664-1518 Et Av.
+212,United States,Idaho,Boise,883-8193 Neque St.
+213,United States,Minnesota,Minneapolis,8863 Nullam Road
+214,United States,Idaho,Boise,Ap #905-410 Nulla Road
+215,United States,Virginia,Newport News,Ap #167-9258 Vivamus Av.
+216,United States,Louisiana,Baton Rouge,"Ap #722-6261 Elit, St."
+217,United States,Alabama,Birmingham,"P.O. Box 412, 7477 Cras Ave"
+218,United States,Idaho,Boise,804-4409 Lobortis Av.
+219,United States,Tennessee,Memphis,Ap #417-8054 Nonummy Av.
+220,United States,Idaho,Boise,Ap #538-5906 Ac Road
+221,United States,Idaho,Boise,"P.O. Box 894, 3536 Lobortis. Street"
+222,United States,Virginia,Norfolk,Ap #606-1748 Dolor Rd.
+223,United States,Arkansas,Fort Smith,"902-2463 A, St."
+224,United States,Kansas,Olathe,Ap #619-1436 Consequat Road
+225,United States,Hawaii,Kaneohe,Ap #380-8044 Habitant Street
+226,United States,Idaho,Boise,3649 Ultricies Street
+227,United States,Idaho,Boise,6815 Vitae Avenue
+228,United States,Idaho,Boise,Ap #953-2859 Interdum. Ave
+229,United States,Alaska,Fairbanks,"446 Consectetuer, Rd."
+230,United States,California,Los Angeles,504-1627 Justo. Rd.
+231,United States,Idaho,Boise,Ap #901-2361 Aliquam Rd.
+232,United States,Idaho,Boise,"P.O. Box 657, 969 Semper Street"
+233,United States,Idaho,Boise,Ap #149-3103 Ut Ave
+234,United States,Idaho,Boise,959-1954 Dictum Rd.
+235,United States,Idaho,Boise,"P.O. Box 154, 8816 Magna Avenue"
+236,United States,Alaska,Ketchikan,8607 Dolor Road
+237,United States,Idaho,Boise,1738 Tincidunt Rd.
+238,United States,Idaho,Boise,"462-5630 Nec, Av."
+239,United States,Idaho,Boise,659-9882 Sem. St.
+240,United States,Vermont,Rutland,"P.O. Box 312, 4358 Vitae Ave"
+241,United States,Tennessee,Knoxville,Ap #305-2181 Nec Av.
+242,United States,Idaho,Boise,432-144 Vel Av.
+243,United States,Idaho,Boise,"3375 Vitae, Rd."
+244,United States,Idaho,Boise,Ap #326-1244 Aliquam St.
+245,United States,Idaho,Boise,301-8575 Integer Rd.
+246,United States,Idaho,Boise,354-1496 Nulla Rd.
+247,United States,Delaware,Newark,2948 Nulla Avenue
+248,United States,Idaho,Boise,113-3543 Velit St.
+249,United States,Idaho,Boise,Ap #451-9731 Ipsum. Street
+250,United States,Wyoming,Wyoming,137-2172 Sociis Road
+251,United States,Idaho,Boise,216-5104 Ipsum Street
+252,United States,Idaho,Boise,486-8535 Auctor Avenue
+253,United States,Alaska,Fairbanks,"P.O. Box 874, 2497 Mollis St."
+254,United States,Idaho,Boise,194-663 Tempor Street
+255,United States,Idaho,Boise,838-2965 Lorem Av.
+256,United States,Idaho,Boise,Ap #280-554 Augue Rd.
+257,United States,Idaho,Boise,"Ap #557-6242 Aliquet, St."
+258,United States,Wisconsin,Green Bay,"P.O. Box 730, 6305 Adipiscing Rd."
+259,United States,Idaho,Boise,2773 Risus. Ave
+260,United States,Florida,Tallahassee,"P.O. Box 130, 5313 Tristique Avenue"
+261,United States,Delaware,Pike Creek,"P.O. Box 544, 5164 Nam Ave"
+262,United States,Texas,San Antonio,2212 Per Rd.
+263,United States,Arkansas,Jonesboro,508-6056 Luctus Av.
+264,United States,Idaho,Boise,807-7182 Nulla St.
+265,United States,Idaho,Boise,144-8259 Aenean Rd.
+266,United States,Idaho,Boise,1347 Ac Avenue
+267,United States,Idaho,Boise,Ap #344-9215 Tempor Av.
+268,United States,Idaho,Boise,171 Dignissim Avenue
+269,United States,Wyoming,Cheyenne,Ap #898-1488 Justo Street
+270,United States,Idaho,Boise,561-2547 Tempor Road
+271,United States,Idaho,Boise,Ap #104-464 Cubilia Av.
+272,United States,Idaho,Boise,Ap #322-1251 Vitae Avenue
+273,United States,Louisiana,Shreveport,Ap #929-967 Feugiat Road
+274,United States,Idaho,Boise,"P.O. Box 251, 5979 Aliquam Street"
+275,United States,Kansas,Overland Park,328-8883 Quam. Ave
+276,United States,Nevada,North Las Vegas,Ap #308-9559 Sed Avenue
+277,United States,Alaska,College,Ap #198-9036 Integer Ave
+278,United States,Kentucky,Bowling Green,864-6045 Orci. St.
+279,United States,Michigan,Sterling Heights,Ap #887-4894 Donec St.
+280,United States,Idaho,Boise,508-4158 Natoque St.
+281,United States,Oklahoma,Norman,Ap #534-9372 Vestibulum Av.
+282,United States,Idaho,Boise,673-9136 Ut Ave
+283,United States,Idaho,Boise,404-2167 Molestie Av.
+284,United States,Montana,Missoula,"937-6332 Nec, Road"
+285,United States,Texas,Fort Worth,"P.O. Box 831, 3749 Faucibus Rd."
+286,United States,Kentucky,Owensboro,2024 Vestibulum Rd.
+287,United States,Minnesota,Bloomington,Ap #931-3772 Donec St.
+288,United States,Idaho,Boise,"994-1493 Ac, St."
+289,United States,Idaho,Boise,Ap #861-5773 Duis St.
+290,United States,California,Fresno,857-7836 Libero Rd.
+291,United States,Idaho,Boise,"894-3375 Eu, St."
+292,United States,Oregon,Salem,"P.O. Box 538, 7575 Volutpat. Ave"
+293,United States,Idaho,Boise,405-4838 Pellentesque Rd.
+294,United States,Virginia,Newport News,"P.O. Box 484, 7908 Suspendisse Street"
+295,United States,Idaho,Boise,Ap #942-1109 Habitant Street
+296,United States,Idaho,Boise,Ap #465-1045 Est Avenue
+297,United States,Michigan,Warren,"Ap #517-5243 Leo, Rd."
+298,United States,Idaho,Boise,267 Eu Street
+299,United States,Maine,Bangor,3894 Turpis. St.
