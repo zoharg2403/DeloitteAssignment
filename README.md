@@ -83,6 +83,25 @@ git submodule update --init --recursive
 
 ### Install Python dependencies
 
+On Windows PowerShell:
+
+```powershell
+python -m venv .venv
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+The execution policy change applies only to the current PowerShell session. If you prefer not to activate the environment, run pip with the virtual environment's Python directly:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+On macOS or Linux:
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -92,23 +111,28 @@ python -m pip install -r requirements.txt
 
 ### Configure Google Cloud authentication
 
+On Windows, install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) and ensure its installer adds `gcloud` to your `PATH`. Restart PowerShell or VS Code after installation, then verify it is available:
+
+```powershell
+gcloud --version
+```
+OR
+```powershell
+gcloud.cmd --version
+```
+
 Authenticate your user account and Application Default Credentials (ADC), which are used by the Google Cloud Python clients:
 
-```bash
-gcloud auth login
-gcloud auth application-default login
-gcloud config set project dataengproj-500110
+```powershell
+gcloud.cmd auth login
+gcloud.cmd auth application-default login
+gcloud.cmd config set project dataengproj-500110
 ```
 
 If you have permission to enable APIs, run:
 
-```bash
-gcloud services enable \
-  bigquery.googleapis.com \
-  storage.googleapis.com \
-  dataproc.googleapis.com \
-  dataform.googleapis.com \
-  --project dataengproj-500110
+```powershell
+gcloud.cmd services enable bigquery.googleapis.com storage.googleapis.com dataproc.googleapis.com dataform.googleapis.com --project dataengproj-500110
 ```
 
 ### Set environment
@@ -335,13 +359,12 @@ Airflow read the DAGs automatically from `dags/` blob.
 ## Suggested future improvements
 
 Possible next steps as the project grows:
-
 - **Automated testing and CI:** Add unit tests for configuration loading,
   ingestion services, task creation, and deployment packaging, then run them
   with linting and type checks on each change.
 - **Configuration validation:** Validate pipeline, task, and job YAML against
   explicit schemas before starting uploads or cloud jobs, with clear errors for
-  missing fields and invalid references.
+  missing fields and invalid references (Typed adaptation of configuration into Airflow’s expected arguments - dataclass / pydantic).
 - **More extensible orchestration:** Add provider types as needed and validate
   operator parameters and dependencies before creating a DAG.
 - **Reliable ingestion operations:** Add configurable retries, per-file
@@ -351,3 +374,7 @@ Possible next steps as the project grows:
   service-to-service authentication.
 - **Reproducible releases:** Record the source revision and dependency versions
   with each Dataproc release, and promote a tested release between environments.
+- **Task Factory Construction:** init only needed providers. (DataprocTasks init resolves the configured release version even for a workflow that may not need a Dataproc task).
+- **Mesure metrics:** Record runtime, shuffle read/write, spill, cost.
+- **File upload / ingestion:** Retry on fail, make schema expectations explicit to catch unexpected changes early.
+- 
